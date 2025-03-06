@@ -10,6 +10,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 public class TableResponse {
     String idTable;
-    String tableName;
+    String nameTable;
     String status;
 }

@@ -19,6 +19,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -37,6 +39,8 @@ public class UserService {
             throw new BadException(ErrorCode.PHONE_EXISTED);
         }
         Account account = accountMapper.toAccount(accountRequest);
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        account.setPassword(passwordEncoder.encode(account.getPassword()));
         account.setStatus(AccountStatus.Inactive.toString());
         account.setRole(AccountRole.Owner.name());
         accountRepository.save(account);

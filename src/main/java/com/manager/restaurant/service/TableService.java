@@ -20,6 +20,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -59,7 +60,11 @@ public class TableService {
         );
         if(account.getRestaurant().getIdRestaurant().equals(idRestaurant)) {
             List<RestaurantTable> tables = tableRepository.findByRestaurant_IdRestaurant(idRestaurant);
-
+            List<TableResponse> rs = new ArrayList<>();
+            for(RestaurantTable table : tables) {
+                rs.add(tableMapper.toTableResponse(table));
+            }
+            return rs;
         }else {
             throw new BadException(ErrorCode.ACCESS_DENIED);
         }
