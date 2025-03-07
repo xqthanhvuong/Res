@@ -30,7 +30,6 @@ public class CustomJwtDecoder implements JwtDecoder {
     public Jwt decode(String token) throws JwtException {
         try {
             authenticationService.verifyToken(token);
-
         } catch (RuntimeException | ParseException | JOSEException e) {
             throw new BadException(ErrorCode.UNAUTHENTICATED);
         }
@@ -40,6 +39,7 @@ public class CustomJwtDecoder implements JwtDecoder {
                     .withSecretKey(secretKeySpec)
                     .macAlgorithm(MacAlgorithm.HS512)
                     .build();
+            System.out.println("sssssssssssssssssssssssssssss");
         }
         return nimbusJwtDecoder.decode(token);
     }

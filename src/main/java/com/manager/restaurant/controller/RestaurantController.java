@@ -36,9 +36,9 @@ public class RestaurantController {
         return JsonResponse.success("Delete restaurant successfully");
     }
 
-    @GetMapping("/{idResraurant}")
-    public JsonResponse<RestaurantResponse> findById(@PathVariable String idRestaurant) {
-        return JsonResponse.success(restaurantService.findById(idRestaurant));
+    @GetMapping("/get-my-restaurant")
+    public JsonResponse<RestaurantResponse> getMyRestaurant() {
+        return JsonResponse.success(restaurantService.getMyRestaurant());
     }
 
 

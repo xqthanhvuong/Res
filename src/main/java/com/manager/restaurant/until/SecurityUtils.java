@@ -26,32 +26,6 @@ public class SecurityUtils {
         return authentication.getName();
     }
 
-    public static String getCurrentUserType() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // Kiểm tra xem authentication có tồn tại và đã xác thực hay chưa
-        if (ObjectUtils.isEmpty(authentication) || !authentication.isAuthenticated()) {
-            return null;
-        }
-
-        // Kiểm tra nếu authentication chứa thông tin JWT claims
-        if (authentication.getPrincipal() instanceof Jwt) {
-            Jwt jwt = (Jwt) authentication.getPrincipal();
-            return jwt.getClaimAsString("type");
-        }
-
-        // Nếu principal là dạng khác, có thể sử dụng cách custom để trích xuất claims
-        // Ví dụ: nếu bạn dùng UserDetails
-        return null;
-    }
-
-    public static boolean isRoleDepartment(){
-        return "DEPARTMENT".equals(getCurrentUserType());
-    }
-
-    public static boolean isRoleStudent(){
-        return "STUDENT".equals(getCurrentUserType());
-    }
 
     public static SignedJWT getCurrentJWTToken(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

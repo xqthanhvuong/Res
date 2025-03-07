@@ -70,4 +70,11 @@ public class RestaurantService {
                 ()-> new BadException(ErrorCode.RESTAURANT_NOT_FOND)
         ));
     }
+
+    public RestaurantResponse getMyRestaurant() {
+        Account account = accountRepository.findByUsername(SecurityUtils.getCurrentUsername()).orElseThrow(
+                ()-> new BadException(ErrorCode.USER_NOT_EXISTED)
+        );
+        return restaurantMapper.toRestaurantResponse(account.getRestaurant());
+    }
 }

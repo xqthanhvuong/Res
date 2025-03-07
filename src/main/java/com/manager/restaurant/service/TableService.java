@@ -68,7 +68,6 @@ public class TableService {
         }else {
             throw new BadException(ErrorCode.ACCESS_DENIED);
         }
-        return new ArrayList<>();
     }
 
 

@@ -10,10 +10,7 @@ import com.manager.restaurant.service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 
@@ -65,7 +62,7 @@ public class AuthenticationController {
         return JsonResponse.success(null);
     }
 
-    @PostMapping("/my-info")
+    @GetMapping("/my-info")
     public JsonResponse<AccountResponse> getMyInfo() {
         return JsonResponse.success(userService.getMyInfo());
     }
