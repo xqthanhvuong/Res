@@ -9,8 +9,6 @@ import com.manager.restaurant.repository.AccountRepository;
 import com.manager.restaurant.repository.FoodRepository;
 import com.manager.restaurant.repository.MenuRepository;
 import com.manager.restaurant.repository.TableRepository;
-import com.manager.restaurant.until.SecurityUtils;
-import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -19,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -30,22 +29,8 @@ public class FoodService {
     MenuRepository menuRepository;
     AccountRepository accountRepository;
     TableRepository tableRepository;
+    OwnerCheckingService ownerCheckingService;
 
-    private boolean isOwner(Menu menu){
-        Account account = accountRepository.findByUsername(SecurityUtils.getCurrentUsername()).orElseThrow(
-                ()-> new BadException(ErrorCode.USER_NOT_EXISTED)
-        );
-        return account.getRole().equals(AccountRole.Owner.name()) &&
-                menu.getRestaurant().getIdRestaurant().equals(account.getRestaurant().getIdRestaurant());
-    }
-
-    private boolean isTableOwner(RestaurantTable table){
-        Account account = accountRepository.findByUsername(SecurityUtils.getCurrentUsername()).orElseThrow(
-                ()-> new BadException(ErrorCode.USER_NOT_EXISTED)
-        );
-        return account.getRole().equals(AccountRole.Owner.name()) &&
-                table.getRestaurant().getIdRestaurant().equals(account.getRestaurant().getIdRestaurant());
-    }
     public String addFood(FoodRequest request) {
         Menu menu;
         if(request.getIdMenu() == null || request.getName() == null || request.getImage() == null){
@@ -54,9 +39,10 @@ public class FoodService {
             menu = menuRepository.getReferenceById(request.getIdMenu());
             if (menu.getIdMenu() == null) throw new BadException(ErrorCode.USERNAME_INVALID);
         }
-        if(!isOwner(menu))
+        if(!ownerCheckingService.isOwner(menu))
             throw new BadException(ErrorCode.ACCESS_DENIED);
         Food food = Food.builder()
+                .idFood(UUID.randomUUID().toString())
                 .menu(menu)
                 .name(request.getName())
                 .price((float)request.getPrice())
@@ -80,7 +66,7 @@ public class FoodService {
             food = foodRepository.getReferenceById(request.getIdFood());
             if (menu.getIdMenu() == null || food.getIdFood() == null) throw new BadException(ErrorCode.USERNAME_INVALID);
         }
-        if(!isOwner(menu))
+        if(!ownerCheckingService.isOwner(menu))
             throw new BadException(ErrorCode.ACCESS_DENIED);
         food.setMenu(menu);
         food.setName(request.getName());
@@ -92,7 +78,7 @@ public class FoodService {
 
     public String deleteFood(String idFood) {
         Food food = foodRepository.getReferenceById(idFood);
-        if(food.getMenu() == null || !isOwner(food.getMenu()))
+        if(food.getMenu() == null || !ownerCheckingService.isOwner(food.getMenu()))
             throw new BadException(ErrorCode.ACCESS_DENIED);
         foodRepository.deleteById(idFood);
         return "ok";
@@ -100,7 +86,7 @@ public class FoodService {
 
     public String deleteAllFoods(String idMenu) {
         Menu menu = menuRepository.getReferenceById(idMenu);
-        if(menu.getIdMenu() == null || !isOwner(menu))
+        if(menu.getIdMenu() == null || !ownerCheckingService.isOwner(menu))
             throw new BadException(ErrorCode.ACCESS_DENIED);
         foodRepository.deleteAllByMenu(menu);
         return "ok";
@@ -120,7 +106,7 @@ public class FoodService {
 
     public List<FoodResponse> getFoodByIdTable(String idTable) {
         RestaurantTable table = tableRepository.getReferenceById(idTable);
-        if(table.getIdTable() == null || !isTableOwner(table))
+        if(table.getIdTable() == null || !ownerCheckingService.isTableOwner(table))
             throw new BadException(ErrorCode.ACCESS_DENIED);
         List<FoodResponse> response = new ArrayList<>();
         for(var item : foodRepository.getFoodByIdTable(idTable).orElseThrow(() -> new BadException(ErrorCode.NOT_FOND))){
