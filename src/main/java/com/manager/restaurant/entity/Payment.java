@@ -2,12 +2,12 @@ package com.manager.restaurant.entity;
 
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
 import org.apache.commons.lang3.ObjectUtils;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data

@@ -61,7 +61,17 @@ public enum ErrorCode {
     DEPARTMENT_NOT_MATCH(1051,"Department not fond" ,HttpStatus.BAD_REQUEST ),
     PHONE_EXISTED(1052, "Phone number existed", HttpStatus.CONFLICT ),
     RESTAURANT_NOT_FOND(1053," Restaurant not fond" ,HttpStatus.NOT_FOUND ),
-    TABLE_NOT_FOND(1053, "Table not fond",HttpStatus.NOT_FOUND );
+    TABLE_NOT_FOND(1054, "Table not fond",HttpStatus.NOT_FOUND ),
+    PHONE_NOT_FOND(1055, "Table not found",HttpStatus.NOT_FOUND ),
+    SMS_SEND_FAILED(1056, "Send sms failed",HttpStatus.INTERNAL_SERVER_ERROR ),
+    EMAIL_NOT_FOND(1057, "Email not found",HttpStatus.NOT_FOUND ),
+    OTP_INVALID_FORMAT(1058, "OTP is not in the correct format", HttpStatus.CONFLICT),
+    OTP_INVALID_OR_USED(1059, "OTP does not exist or has already been used.", HttpStatus.INTERNAL_SERVER_ERROR),
+    ACTIVE_ACCOUNT_FAILED(1060, "Cant not active account.", HttpStatus.INTERNAL_SERVER_ERROR),
+    PAYMENT_NOT_FOUND(1061, "Payment not found.", HttpStatus.NOT_FOUND),
+    UPDATE_FAILED(1062, "Update failed.", HttpStatus.INTERNAL_SERVER_ERROR),
+    INVALID_REQUEST(1062, "Invalid request.", HttpStatus.BAD_REQUEST);
+
 
     private final int code;
     private final String message;
