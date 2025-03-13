@@ -56,6 +56,12 @@ public class Order {
         if(ObjectUtils.isEmpty(idOrder)){
             idOrder = UUID.randomUUID().toString();
         }
+        if(ObjectUtils.isEmpty(payment)){
+            payment = "Not Paid";
+        }
+        if(ObjectUtils.isEmpty(status)){
+            status = "Processing";
+        }
     }
 
     @PreUpdate

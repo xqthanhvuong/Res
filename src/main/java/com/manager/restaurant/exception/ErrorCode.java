@@ -60,8 +60,12 @@ public enum ErrorCode {
     NOT_FOND(1050,"Not fond" ,HttpStatus.NOT_FOUND ),
     DEPARTMENT_NOT_MATCH(1051,"Department not fond" ,HttpStatus.BAD_REQUEST ),
     PHONE_EXISTED(1052, "Phone number existed", HttpStatus.CONFLICT ),
-    RESTAURANT_NOT_FOND(1053," Restaurant not fond" ,HttpStatus.NOT_FOUND ),
-    TABLE_NOT_FOND(1053, "Table not fond",HttpStatus.NOT_FOUND );
+    RESTAURANT_NOT_FOUND(1053," Restaurant not fond" ,HttpStatus.NOT_FOUND ),
+    TABLE_NOT_FOUND(1053, "Table not fond",HttpStatus.NOT_FOUND ),
+    BILL_NOT_FOUND(1054, "Bill not fond",HttpStatus.NOT_FOUND ),
+    FOOD_NOT_FOUND(1055, "Food not fond", HttpStatus.NOT_FOUND ),
+    RESTAURANT_NOT_MATCH(1056,"The information is not located in the same restaurant." , HttpStatus.BAD_REQUEST ),
+    ORDER_NOT_FOUND(1057, "Order not fond",HttpStatus.NOT_FOUND );
 
     private final int code;
     private final String message;

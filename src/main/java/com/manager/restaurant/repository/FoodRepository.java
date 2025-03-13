@@ -27,4 +27,7 @@ public interface FoodRepository extends JpaRepository<Food, String> {
         SELECT o.food FROM Bill b JOIN b.orders o WHERE b.table.idTable = :idTable AND o.status = 'Open'
     """)
     Optional<List<Food>> getFoodByIdTable(@Param("idTable") String idTable);
+
+    @Query("select f.menu.restaurant.idRestaurant from Food f where f.idFood == :idFood")
+    String getIdRestaurantByIdFood(@Param("idFood") String idFood);
 }

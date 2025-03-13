@@ -61,4 +61,7 @@ springdoc:
 jwt:
   signerKey: "EIG2ryG3InsGo7mStNgivMrw2/OpHD4UrBJUPwkSWacWJaEztRuqsr/axSiuCTxZ"
 
+socket:
+  url: "http://localhost:3000/api/v1/socket/send-message"
+
 

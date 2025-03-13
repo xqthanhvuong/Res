@@ -3,9 +3,11 @@ package com.manager.restaurant.repository;
 import com.manager.restaurant.dto.response.chart.TableChart;
 import com.manager.restaurant.entity.RestaurantTable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,4 +33,14 @@ public interface TableRepository extends JpaRepository<RestaurantTable, String> 
             @Param("thisWeekEnd") String thisWeekEnd,
             @Param("idRestaurant") String idRestaurant
     );
+
+    @Query("select r.restaurant.idRestaurant from RestaurantTable r where r.idTable == :idTable")
+    String getRestaurantIdByIdTable(@Param("idTable") String idTable);
+
+    List<RestaurantTable> findAllByMergedTo(String mergedTo);
+
+    @Modifying
+    @Transactional
+    @Query("update RestaurantTable t set t.status =:status where t.mergedTo = :mergeTo")
+    void updateStatus(@Param("mergeTo") String mergeTo, @Param("status") String status);
 }

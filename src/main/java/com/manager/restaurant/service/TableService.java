@@ -13,7 +13,6 @@ import com.manager.restaurant.repository.AccountRepository;
 import com.manager.restaurant.repository.RestaurantRepository;
 import com.manager.restaurant.repository.TableRepository;
 import com.manager.restaurant.until.SecurityUtils;
-import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -36,7 +35,7 @@ public class TableService {
     public void createTable(TableRequest request) {
         executeIfOwner(request, req -> {
             Restaurant restaurant = restaurantRepository.findById(req.getIdRestaurant()).orElseThrow(
-                    () -> new BadException(ErrorCode.RESTAURANT_NOT_FOND)
+                    () -> new BadException(ErrorCode.RESTAURANT_NOT_FOUND)
             );
             RestaurantTable table = new RestaurantTable();
             table.setRestaurant(restaurant);
@@ -48,7 +47,7 @@ public class TableService {
     public void deleteTable(String idTable) {
         executeIfOwner(idTable, id -> {
             RestaurantTable table = tableRepository.findById(id).orElseThrow(
-                    () -> new BadException(ErrorCode.TABLE_NOT_FOND)
+                    () -> new BadException(ErrorCode.TABLE_NOT_FOUND)
             );
             tableRepository.delete(table);
         });

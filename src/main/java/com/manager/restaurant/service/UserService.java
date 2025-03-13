@@ -58,7 +58,7 @@ public class UserService {
 
     public void createStaff(StaffRequest staffRequest) {
         Restaurant restaurant = restaurantRepository.findById(staffRequest.getIdRestaurant()).orElseThrow(
-                () -> new BadException(ErrorCode.RESTAURANT_NOT_FOND)
+                () -> new BadException(ErrorCode.RESTAURANT_NOT_FOUND)
         );
         Account account = accountMapper.staffToAccount(staffRequest);
         account.setRestaurant(restaurant);

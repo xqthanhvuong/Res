@@ -1,5 +1,6 @@
 package com.manager.restaurant.repository;
 
+import com.manager.restaurant.dto.response.Bill.FoodDetails;
 import com.manager.restaurant.entity.Bill;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -50,4 +51,12 @@ public interface BillRepository extends JpaRepository<Bill, String> {
             @Param("end") String lastWeekEnd,
             @Param("idTable") String idTable
     );
+
+
+    Bill findByTable_IdTableAndStatus(String idTable, String status);
+
+    @Query("select new com.manager.restaurant.dto.response.Bill.FoodDetails(f.idFood, f.name, f.price, f.image, o.quantity, o.idOrder)" +
+            "from Food f join Order o on f.idFood = o.food.idFood " +
+            "where o.bill.idBill = :idBill")
+    List<FoodDetails> getFoodDetails(@Param("idBill") String idBill);
 }

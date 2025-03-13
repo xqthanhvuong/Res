@@ -55,16 +55,12 @@
         public SignedJWT verifyToken(String token) throws ParseException, JOSEException {
             SignedJWT signedJWT = jwtUtil.parseToken(token);
             jwtUtil.validateTokenExpiration(signedJWT);
-            System.out.println("111111111111111111");
             checkTokenInvalidation(signedJWT.getJWTClaimsSet().getJWTID());
-            System.out.println("33333333333333333");
             return signedJWT;
         }
 
         private void checkTokenInvalidation(String jwtId) {
-            System.out.println("22222222222222222222");
             if (invalidatedTokenRepository.existsById(jwtId)) {
-                System.out.println("44444444444444444");
                 throw new BadException(ErrorCode.UNAUTHENTICATED);
             }
         }

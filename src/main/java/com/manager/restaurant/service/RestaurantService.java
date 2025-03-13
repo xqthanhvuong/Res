@@ -43,7 +43,7 @@ public class RestaurantService {
 
     public void updateNameRestaurant(UpdateRestaurantRequest request) {
         Restaurant restaurant = restaurantRepository.findById(request.getIdRestaurant()).orElseThrow(
-                ()-> new BadException(ErrorCode.RESTAURANT_NOT_FOND)
+                ()-> new BadException(ErrorCode.RESTAURANT_NOT_FOUND)
         );
         restaurant.setName(request.getName());
         restaurantRepository.save(restaurant);
@@ -55,7 +55,7 @@ public class RestaurantService {
         );
         if(AccountRole.Owner.toString().equals(account.getRole())){
             Restaurant restaurant = restaurantRepository.findById(idRestaurant).orElseThrow(
-                    ()-> new BadException(ErrorCode.RESTAURANT_NOT_FOND)
+                    ()-> new BadException(ErrorCode.RESTAURANT_NOT_FOUND)
             );
             List<Account> accounts = accountRepository.findAllByRestaurant_IdRestaurant(idRestaurant);
             accountRepository.deleteAll(accounts);
@@ -67,7 +67,7 @@ public class RestaurantService {
 
     public RestaurantResponse findById(String idRestaurant) {
         return restaurantMapper.toRestaurantResponse(restaurantRepository.findById(idRestaurant).orElseThrow(
-                ()-> new BadException(ErrorCode.RESTAURANT_NOT_FOND)
+                ()-> new BadException(ErrorCode.RESTAURANT_NOT_FOUND)
         ));
     }
 
