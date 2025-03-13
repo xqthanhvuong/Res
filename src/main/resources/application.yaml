@@ -61,7 +61,13 @@ springdoc:
 jwt:
   signerKey: "EIG2ryG3InsGo7mStNgivMrw2/OpHD4UrBJUPwkSWacWJaEztRuqsr/axSiuCTxZ"
 
+twilio:
+  account-sid: ${TWILIO_ACCOUNT_SID}
+  auth-token: ${TWILIO_AUTH_TOKEN}
+  phone: "+15102395985"
+
+pushy:
+  secret: ${PUSHY_SECRET}
+
 socket:
-  url: "http://localhost:3000/api/v1/socket/send-message"
-
-
+  socket-api-url: "http://localhost:3000/api/v1/socket/send-message"

@@ -30,6 +30,10 @@ public class JsonResponse<T> {
         return new JsonResponse<>(200, message, null);
     }
 
+    public static <T> JsonResponse<T> success(String message, T result) {
+        return new JsonResponse<>(200, message, result);
+    }
+
     public static <T> JsonResponse<T> error(ErrorCode errorCode) {
         return new JsonResponse<>(errorCode.getCode(), errorCode.getMessage(), null);
     }

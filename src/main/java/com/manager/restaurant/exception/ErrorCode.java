@@ -65,7 +65,19 @@ public enum ErrorCode {
     BILL_NOT_FOUND(1054, "Bill not fond",HttpStatus.NOT_FOUND ),
     FOOD_NOT_FOUND(1055, "Food not fond", HttpStatus.NOT_FOUND ),
     RESTAURANT_NOT_MATCH(1056,"The information is not located in the same restaurant." , HttpStatus.BAD_REQUEST ),
-    ORDER_NOT_FOUND(1057, "Order not fond",HttpStatus.NOT_FOUND );
+    ORDER_NOT_FOUND(1057, "Order not fond",HttpStatus.NOT_FOUND ),
+    RESTAURANT_NOT_FOND(1053," Restaurant not fond" ,HttpStatus.NOT_FOUND ),
+    TABLE_NOT_FOND(1054, "Table not fond",HttpStatus.NOT_FOUND ),
+    PHONE_NOT_FOND(1055, "Table not found",HttpStatus.NOT_FOUND ),
+    SMS_SEND_FAILED(1056, "Send sms failed",HttpStatus.INTERNAL_SERVER_ERROR ),
+    EMAIL_NOT_FOND(1057, "Email not found",HttpStatus.NOT_FOUND ),
+    OTP_INVALID_FORMAT(1058, "OTP is not in the correct format", HttpStatus.CONFLICT),
+    OTP_INVALID_OR_USED(1059, "OTP does not exist or has already been used.", HttpStatus.INTERNAL_SERVER_ERROR),
+    ACTIVE_ACCOUNT_FAILED(1060, "Cant not active account.", HttpStatus.INTERNAL_SERVER_ERROR),
+    PAYMENT_NOT_FOUND(1061, "Payment not found.", HttpStatus.NOT_FOUND),
+    UPDATE_FAILED(1062, "Update failed.", HttpStatus.INTERNAL_SERVER_ERROR),
+    INVALID_REQUEST(1062, "Invalid request.", HttpStatus.BAD_REQUEST);
+
 
     private final int code;
     private final String message;
