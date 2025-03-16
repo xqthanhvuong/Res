@@ -25,10 +25,11 @@ public class ReportService {
     final ReportRepository reportRepository;
     final WorkDayRepository workDayRepository;
     final ManagerCheckingService managerCheckingService;
+    final StaffCheckingService staffCheckingService;
     final ReportImageService reportImageService;
 
     public ReportResponse getReport(String idReport) {
-//        if (!managerCheckingService.isManager()) throw new BadException(ErrorCode.ACCESS_DENIED);
+        if (staffCheckingService.isStaff()) throw new BadException(ErrorCode.ACCESS_DENIED);
         var report = reportRepository.getReferenceById(idReport);
         return ReportResponse.builder()
                 .idReport(report.getIdReport())
