@@ -1,12 +1,10 @@
 package com.manager.restaurant.repository;
 
 import com.manager.restaurant.entity.Account;
-import org.openxmlformats.schemas.officeDocument.x2006.sharedTypes.STXstring;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,8 +23,8 @@ public interface AccountRepository extends JpaRepository<Account, String> {
 
     Optional<String> findPhoneByUsername(String username);
 
-    @Modifying
-    @Transactional
-    @Query("UPDATE Account a SET a.active = true WHERE a.phone = :phone")
-    int activateAccountByPhone(String phone);
+    @Query("SELECT a.username FROM Account a WHERE a.restaurant.idRestaurant = :idRestaurant AND a.status = :status AND a.role <> 'Owner'")
+    Optional<List<String>> findUsernamesByRestaurantAndStatus(@Param("idRestaurant") String idRestaurant, @Param("status") String status);
+
+    Optional<Account> findByPhone(String phone);
 }

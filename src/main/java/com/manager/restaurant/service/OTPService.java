@@ -1,5 +1,6 @@
 package com.manager.restaurant.service;
 
+import com.manager.restaurant.entity.AccountStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -29,13 +30,13 @@ import lombok.extern.slf4j.Slf4j;
 public class OTPService {
 
     // Load from application.yaml
-    @Value("${account-sid}")
+    @Value("${twilio.account-sid}")
     String accountSid;
 
-    @Value("${auth-token}")
+    @Value("${twilio.auth-token}")
     String authToken;
 
-    @Value("${phone:}")
+    @Value("${twilio.phone:}")
     String senderPhone;
 
     // Inject OTP Repository
@@ -127,10 +128,10 @@ public class OTPService {
 
         // If OTP is valid, activate account.
         String phone = request.getPhone();
-        int updated = accountRepository.activateAccountByPhone(phone);
-        if (updated == 0) {
-            throw new BadException(ErrorCode.ACTIVE_ACCOUNT_FAILED);
-        }
+        var account = accountRepository.findByPhone(phone)
+                .orElseThrow(()-> new BadException(ErrorCode.ACTIVE_ACCOUNT_FAILED));
+        account.setStatus(AccountStatus.Active.name());
+        accountRepository.save(account);
     }
 
     // Service to validation OTP base on phone number and code.
