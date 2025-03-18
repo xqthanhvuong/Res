@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,4 +35,8 @@ public interface AccountRepository extends JpaRepository<Account, String> {
 
     @Query("select a.deviceToken from Account a where a.restaurant.idRestaurant = :idRes")
     List<String> getDeviceTokenByIdRestaurant(@Param("idRes") String idRestaurant);
+    @Query("SELECT a.username FROM Account a WHERE a.restaurant.idRestaurant = :idRestaurant AND a.status = :status AND a.role <> 'Owner'")
+    Optional<List<String>> findUsernamesByRestaurantAndStatus(@Param("idRestaurant") String idRestaurant, @Param("status") String status);
+
+    Optional<Account> findByPhone(String phone);
 }

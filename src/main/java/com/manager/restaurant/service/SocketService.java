@@ -20,7 +20,7 @@ public class SocketService {
 
     final RestTemplate restTemplate;
 
-    @Value("${socket-api-url}")
+    @Value("${socket.socket-api-url}")
     String socketApiUrl;
 
     // Service to send message to socker server

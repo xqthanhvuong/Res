@@ -3,5 +3,7 @@ package com.manager.restaurant.entity;
 public enum AccountRole {
     Owner,
     Cook,
-    Waiter
+    Waiter,
+    Guard,
+    Manager
 }

@@ -5,15 +5,13 @@ import com.manager.restaurant.dto.request.AccountUpdateRequest;
 import com.manager.restaurant.dto.request.StaffRequest;
 import com.manager.restaurant.dto.request.UpdateDeviceRequest;
 import com.manager.restaurant.dto.response.AccountResponse;
-import com.manager.restaurant.entity.Account;
-import com.manager.restaurant.entity.AccountRole;
-import com.manager.restaurant.entity.AccountStatus;
-import com.manager.restaurant.entity.Restaurant;
+import com.manager.restaurant.entity.*;
 import com.manager.restaurant.exception.BadException;
 import com.manager.restaurant.exception.ErrorCode;
 import com.manager.restaurant.mapper.AccountMapper;
 import com.manager.restaurant.repository.AccountRepository;
 import com.manager.restaurant.repository.RestaurantRepository;
+import com.manager.restaurant.repository.StaffPaymentRepository;
 import com.manager.restaurant.until.SecurityUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +29,7 @@ public class UserService {
     AccountRepository accountRepository;
     AccountMapper accountMapper;
     RestaurantRepository restaurantRepository;
+    StaffPaymentRepository staffPaymentRepository;
     public void createAccount(AccountRequest accountRequest) {
         if(accountRepository.existsByUsername(accountRequest.getUsername())){
             throw new BadException(ErrorCode.USER_EXISTED);
@@ -63,7 +62,12 @@ public class UserService {
         Account account = accountMapper.staffToAccount(staffRequest);
         account.setRestaurant(restaurant);
         account.setStatus(AccountStatus.Active.toString());
+        StaffPayment staffPayment = StaffPayment.builder()
+                .account(account)
+                .salary(0)
+                .build();
         accountRepository.save(account);
+        staffPaymentRepository.save(staffPayment);
     }
 
     public void updateDeviceToken(UpdateDeviceRequest request){
