@@ -46,7 +46,7 @@ public class UserService {
     }
 
     public void updateAccount(AccountUpdateRequest accountRequest) {
-        Account account = accountRepository.findByIdAccount(accountRequest.getIdAccount()).orElseThrow(
+        Account account = accountRepository.findByUsername(SecurityUtils.getCurrentUsername()).orElseThrow(
                 () -> new BadException(ErrorCode.USER_NOT_EXISTED)
         );
         account.setName(accountRequest.getName());

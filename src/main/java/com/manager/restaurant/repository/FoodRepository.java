@@ -28,6 +28,6 @@ public interface FoodRepository extends JpaRepository<Food, String> {
     """)
     Optional<List<Food>> getFoodByIdTable(@Param("idTable") String idTable);
 
-    @Query("select f.menu.restaurant.idRestaurant from Food f where f.idFood == :idFood")
+    @Query("select f.menu.restaurant.idRestaurant from Food f where f.idFood = :idFood")
     String getIdRestaurantByIdFood(@Param("idFood") String idFood);
 }

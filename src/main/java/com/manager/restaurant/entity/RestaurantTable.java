@@ -51,6 +51,9 @@ public class RestaurantTable {
         if(ObjectUtils.isEmpty(idTable)){
             idTable = UUID.randomUUID().toString();
         }
+        if(ObjectUtils.isEmpty(status)){
+            status = "Available";
+        }
     }
 
     @PreUpdate

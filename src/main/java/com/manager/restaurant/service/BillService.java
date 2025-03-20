@@ -1,11 +1,14 @@
 package com.manager.restaurant.service;
 
+import com.manager.restaurant.component.NotiClient;
 import com.manager.restaurant.dto.request.MergeTableRequest;
 import com.manager.restaurant.dto.request.OrderRequest;
 import com.manager.restaurant.dto.response.Bill.BillResponse;
 import com.manager.restaurant.dto.response.Bill.FoodDetails;
 import com.manager.restaurant.dto.response.CheckBillResponse;
+import com.manager.restaurant.dto.response.JsonResponse;
 import com.manager.restaurant.dto.response.OrderResponse;
+import com.manager.restaurant.dto.response.UrlResponse;
 import com.manager.restaurant.entity.*;
 import com.manager.restaurant.exception.BadException;
 import com.manager.restaurant.exception.ErrorCode;
@@ -27,6 +30,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -39,6 +43,7 @@ public class BillService {
     FoodRepository foodRepository;
     AccountRepository accountRepository;
     OrderRepository orderRepository;
+    PaymentRepository paymentRepository;
 
     public CheckBillResponse checkBill(String idTable) {
         RestaurantTable table = tableRepository.findById(idTable).orElseThrow(
@@ -60,8 +65,10 @@ public class BillService {
         );
 
         BillResponse billResponse = new BillResponse();
-        billResponse.setIdTable(bill.getTable().getIdTable());
         billResponse.setStatus(bill.getStatus());
+        billResponse.setIdBill(bill.getIdBill());
+        billResponse.setIdTable(bill.getTable().getIdTable());
+        billResponse.setNameTable(bill.getTable().getNameTable());
         List<FoodDetails> foodDetails = billRepository.getFoodDetails(bill.getIdBill());
         billResponse.setFoods(foodDetails);
         double total = 0;
@@ -69,6 +76,7 @@ public class BillService {
             total += foodDetail.getPrice() * foodDetail.getQuantity();
         }
         billResponse.setTotal(total);
+
         return billResponse;
     }
 
@@ -123,15 +131,16 @@ public class BillService {
 
 
         String idRes = table.getRestaurant().getIdRestaurant();
+        String tableName = table.getNameTable();
         new Thread(()->{
             notifyClients(idRes, "New order has been placed");
             List<String> deviceTokens = accountRepository.getDeviceTokenByIdRestaurant(idRes);
             if(ObjectUtils.isNotEmpty(deviceTokens)){
                 for(String deviceToken : deviceTokens){
-                    
+                    NotiClient.sendMessgae(deviceToken,"Bàn " + tableName + " có đơn hàng mới");
                 }
             }
-        })
+        }).start();
 
         return OrderResponse.builder()
                 .idOrder(order.getIdOrder())
@@ -162,7 +171,7 @@ public class BillService {
     }
 
 
-    private String createMethodPayment(float price, String partnerCode, String desUrl, String des, String accessKey,
+    private String createMethodPayment(double price, String partnerCode, String desUrl, String des, String accessKey,
                                        String secretKey) {
         String payUrl = "";
         String urlString = "http://localhost:3000/api/v1/momo/payment-request";
@@ -325,4 +334,64 @@ public class BillService {
         }
     }
 
+    public List<BillResponse> getAllFoodOrders(String idRestaurant) {
+        List<Bill> bills = billRepository.findByRestaurantIdAndStatus(idRestaurant, "Open");
+        List<BillResponse> billResponses = new ArrayList<>();
+        for(Bill bill : bills){
+            BillResponse billResponse = new BillResponse();
+            billResponse.setStatus(bill.getStatus());
+            billResponse.setIdBill(bill.getIdBill());
+            billResponse.setIdTable(bill.getTable().getIdTable());
+            billResponse.setNameTable(bill.getTable().getNameTable());
+            List<FoodDetails> foodDetails = billRepository.getFoodDetails(bill.getIdBill());
+            billResponse.setFoods(foodDetails);
+            double total = 0;
+            for (FoodDetails foodDetail : foodDetails) {
+                total += foodDetail.getPrice() * foodDetail.getQuantity();
+            }
+            billResponse.setTotal(total);
+            billResponses.add(billResponse);
+        }
+        return billResponses;
+    }
+
+
+    public BillResponse getAllFoodOrdersForClient(String idTable) {
+        RestaurantTable table = tableRepository.findById(idTable).orElseThrow(
+                ()-> new BadException(ErrorCode.TABLE_NOT_FOUND)
+        );
+        if(ObjectUtils.isNotEmpty(table.getMergedTo())){
+            table = tableRepository.findById(table.getMergedTo()).orElseThrow(
+                    ()-> new BadException(ErrorCode.TABLE_NOT_FOUND)
+            );
+        }
+        Bill bill = billRepository.findByTable_IdTableAndStatus(idTable, "Open");
+        return getBillDetails(bill.getIdBill());
+    }
+
+    public UrlResponse paymentAllBill(String idTable) {
+        RestaurantTable table = tableRepository.findById(idTable).orElseThrow(
+                ()->new BadException(ErrorCode.TABLE_NOT_FOUND)
+        );
+        if(ObjectUtils.isNotEmpty(table.getMergedTo())){
+            table = tableRepository.findById(table.getMergedTo()).orElseThrow(
+                    ()->new BadException(ErrorCode.TABLE_NOT_FOUND)
+            );
+        }
+        Payment payment = paymentRepository.findByRestaurant_IdRestaurant(table.getRestaurant().getIdRestaurant()).orElseThrow(
+                ()->new BadException(ErrorCode.PAYMENT_NOT_FOUND)
+        );
+        BillResponse billResponse = getAllFoodOrdersForClient(table.getIdTable());
+        String code = billResponse.getIdBill();
+        String desUrl = "http://localhost:8082/bills/complete-payment?idTable=" + table.getIdTable() + "&code="
+                + code + "&idRes=" + table.getRestaurant().getIdRestaurant();
+        String des = "Thanh toan hoa don";
+        String payURL = createMethodPayment(billResponse.getTotal(), payment.getPartnerCode(), desUrl, des
+                ,payment.getAccessKey(), payment.getSecretKey());
+        if(ObjectUtils.isNotEmpty(payURL)){
+            return new UrlResponse(payURL);
+        }else {
+            throw new BadException(ErrorCode.CANT_PAY);
+        }
+    }
 }

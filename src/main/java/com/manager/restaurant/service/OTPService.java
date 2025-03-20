@@ -68,8 +68,7 @@ public class OTPService {
     public void generateAndSendAndSaveOTP(OTPRequest request) {
         // Generate OTP code and create OTP entity.
         String otpCode = OTPHelper.generateOTP(5);
-        String phone = request.getPhone();
-
+        String phone = OTPHelper.convertToInternationalFormat(request.getPhone());
         // Send SMS to phone of user, handle if it has error.
         boolean isSentSuccess = sendSMS(phone, otpCode);
         if (!isSentSuccess) {
@@ -98,7 +97,6 @@ public class OTPService {
         if (phone == null || !accountRepository.existsByPhone(phone)) {
             throw new BadException(ErrorCode.PHONE_NOT_FOND);
         }
-
         // Send and save OTP.
         generateAndSendAndSaveOTP(request);
     }

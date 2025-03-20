@@ -58,8 +58,11 @@ public class RestaurantService {
                     ()-> new BadException(ErrorCode.RESTAURANT_NOT_FOUND)
             );
             List<Account> accounts = accountRepository.findAllByRestaurant_IdRestaurant(idRestaurant);
+            accounts.removeIf(acc->acc.getRole().equals(AccountRole.Owner.toString()));
             accountRepository.deleteAll(accounts);
             restaurantRepository.delete(restaurant);
+            account.setRestaurant(null);
+            accountRepository.save(account);
         }else {
             throw new BadException(ErrorCode.ACCESS_DENIED);
         }

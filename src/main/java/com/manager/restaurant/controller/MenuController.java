@@ -28,7 +28,7 @@ public class MenuController {
         return JsonResponse.success(menuService.getMenu(idRestaurant));
     }
 
-    @GetMapping("/delete/{idMenu}")
+    @DeleteMapping("/delete/{idMenu}")
     JsonResponse<String> deleteMenu(@PathVariable("idMenu") String idMenu){
         return JsonResponse.success(menuService.deleteMenu(idMenu));
     }

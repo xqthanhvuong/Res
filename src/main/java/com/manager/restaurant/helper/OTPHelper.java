@@ -16,6 +16,13 @@ public class OTPHelper {
         return sb.toString();
     }
 
+    public static String convertToInternationalFormat(String phoneNumber){
+        if(phoneNumber.startsWith("0")){
+            phoneNumber = "+84" + phoneNumber.substring(1);
+        }
+        return phoneNumber;
+    }
+
     // Method to validation OTP.
     public static boolean isOTP(String otp) {
         return otp.matches("[0-9]{5}");

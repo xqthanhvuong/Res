@@ -1,17 +1,21 @@
 package com.manager.restaurant.controller;
 
 
-import com.manager.restaurant.dto.request.CheckBillRequest;
+import com.manager.restaurant.dto.request.MergeTableRequest;
 import com.manager.restaurant.dto.request.OrderRequest;
 import com.manager.restaurant.dto.response.Bill.BillResponse;
 import com.manager.restaurant.dto.response.CheckBillResponse;
 import com.manager.restaurant.dto.response.JsonResponse;
 import com.manager.restaurant.dto.response.OrderResponse;
+import com.manager.restaurant.dto.response.UrlResponse;
 import com.manager.restaurant.service.BillService;
+import io.swagger.v3.core.util.Json;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/bills")
@@ -52,5 +56,34 @@ public class BillController {
         billService.closeBill(idTable);
         return JsonResponse.success("Update success");
     }
+
+    @GetMapping("/get-all-order/{idRestaurant}")
+    public JsonResponse<List<BillResponse>> getAllOrder(@PathVariable("idRestaurant") String idRestaurant){
+        return JsonResponse.success(billService.getAllFoodOrders(idRestaurant));
+    }
+
+    @GetMapping("/get-all-order-client/{idTable}")
+    public JsonResponse<BillResponse> getAllOrderClient(@PathVariable("idTable") String idTable){
+        return JsonResponse.success(billService.getAllFoodOrdersForClient(idTable));
+    }
+
+    @PostMapping("/merge-table")
+    public JsonResponse<String> mergeTable(@RequestBody MergeTableRequest request){
+        billService.mergeTable(request);
+        return JsonResponse.success("Merge table success");
+    }
+
+    @PostMapping("/un-merge-table/{idTable}")
+    public JsonResponse<String> unMergeTable(@PathVariable("idTable") String idTable){
+        billService.unMergeOneTable(idTable);
+        return JsonResponse.success("Un merge table success");
+    }
+
+    @GetMapping("/payment-all-bill/{idTable}")
+    public JsonResponse<UrlResponse> payment(@PathVariable("idTable") String idTable){
+        return JsonResponse.success(billService.paymentAllBill(idTable));
+    }
+
+
 }
 

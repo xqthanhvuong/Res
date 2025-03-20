@@ -34,7 +34,7 @@ public interface TableRepository extends JpaRepository<RestaurantTable, String> 
             @Param("idRestaurant") String idRestaurant
     );
 
-    @Query("select r.restaurant.idRestaurant from RestaurantTable r where r.idTable == :idTable")
+    @Query("select r.restaurant.idRestaurant from RestaurantTable r where r.idTable = :idTable")
     String getRestaurantIdByIdTable(@Param("idTable") String idTable);
 
     List<RestaurantTable> findAllByMergedTo(String mergedTo);

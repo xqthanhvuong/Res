@@ -38,6 +38,7 @@ public class TableService {
                     () -> new BadException(ErrorCode.RESTAURANT_NOT_FOUND)
             );
             RestaurantTable table = new RestaurantTable();
+            table.setNameTable(request.getNameTable());
             table.setRestaurant(restaurant);
             tableRepository.save(table);
         });

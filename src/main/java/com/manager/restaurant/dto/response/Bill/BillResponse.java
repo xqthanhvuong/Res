@@ -12,6 +12,8 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BillResponse {
     String idTable;
+    String idBill;
+    String nameTable;
     List<FoodDetails> foods;
     double total;
     String status;
