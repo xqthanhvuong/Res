@@ -50,6 +50,9 @@ public class Menu {
         if(ObjectUtils.isEmpty(idMenu)){
             idMenu = UUID.randomUUID().toString();
         }
+        if(ObjectUtils.isEmpty(status)){
+            status = "Inactive";
+        }
     }
 
     @PreUpdate

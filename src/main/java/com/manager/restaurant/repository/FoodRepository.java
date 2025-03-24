@@ -17,7 +17,7 @@ public interface FoodRepository extends JpaRepository<Food, String> {
         SELECT new com.manager.restaurant.dto.response.FoodResponse(f.idFood, f.name, f.price, f.image)
         FROM Food f
         WHERE f.menu.idMenu = :idMenu
-            AND EXISTS (SELECT 1 FROM Menu m WHERE m.idMenu = :idMenu AND m.status = 'active')
+            AND EXISTS (SELECT 1 FROM Menu m WHERE m.idMenu = :idMenu )
     """)
     Optional<List<FoodResponse>> getFoods(@Param("idMenu") String idMenu);
 
@@ -30,4 +30,7 @@ public interface FoodRepository extends JpaRepository<Food, String> {
 
     @Query("select f.menu.restaurant.idRestaurant from Food f where f.idFood = :idFood")
     String getIdRestaurantByIdFood(@Param("idFood") String idFood);
+
+    @Query("select f from Food f where f.menu.restaurant.idRestaurant = :idRestaurant and f.menu.status = :status")
+    List<Food> getFoodByIdRestaurantAndStatus(@Param("idRestaurant") String idRestaurant, @Param("status") String status);
 }

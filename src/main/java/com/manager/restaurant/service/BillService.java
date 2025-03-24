@@ -6,14 +6,12 @@ import com.manager.restaurant.dto.request.OrderRequest;
 import com.manager.restaurant.dto.response.Bill.BillResponse;
 import com.manager.restaurant.dto.response.Bill.FoodDetails;
 import com.manager.restaurant.dto.response.CheckBillResponse;
-import com.manager.restaurant.dto.response.JsonResponse;
 import com.manager.restaurant.dto.response.OrderResponse;
 import com.manager.restaurant.dto.response.UrlResponse;
 import com.manager.restaurant.entity.*;
 import com.manager.restaurant.exception.BadException;
 import com.manager.restaurant.exception.ErrorCode;
 import com.manager.restaurant.repository.*;
-import com.manager.restaurant.until.SecurityUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -128,6 +126,7 @@ public class BillService {
                 .food(food)
                 .build();
         order = orderRepository.save(order);
+
 
 
         String idRes = table.getRestaurant().getIdRestaurant();
@@ -264,7 +263,7 @@ public class BillService {
             table = tableRepository.findById(table.getMergedTo()).orElseThrow(
                     ()-> new BadException(ErrorCode.TABLE_NOT_FOUND)
             );
-            List<RestaurantTable> tables = tableRepository.findAllByMergedTo(table.getMergedTo());
+            List<RestaurantTable> tables = tableRepository.findAllByMergedTo(table.getIdTable());
             for(RestaurantTable item : tables){
                 item.setStatus("Available");
                 item.setMergedTo(null);
@@ -365,7 +364,7 @@ public class BillService {
                     ()-> new BadException(ErrorCode.TABLE_NOT_FOUND)
             );
         }
-        Bill bill = billRepository.findByTable_IdTableAndStatus(idTable, "Open");
+        Bill bill = billRepository.findByTable_IdTableAndStatus(table.getIdTable(), "Open");
         return getBillDetails(bill.getIdBill());
     }
 

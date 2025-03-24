@@ -2,6 +2,7 @@ package com.manager.restaurant.repository;
 
 import com.manager.restaurant.dto.response.MenuResponse;
 import com.manager.restaurant.entity.Menu;
+import com.manager.restaurant.entity.Restaurant;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,4 +18,8 @@ public interface MenuRepository extends JpaRepository<Menu, String> {
         WHERE m.restaurant.idRestaurant = :idRestaurant
     """)
     Optional<List<MenuResponse>> getMenuByRestaurantId(@Param("idRestaurant") String idRestaurant);
+
+    List<Menu> findByRestaurant_IdRestaurant(String idRestaurant);
+
+    Menu findByRestaurant_IdRestaurantAndStatus(String idRestaurant, String status);
 }

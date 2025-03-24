@@ -39,8 +39,10 @@ public class FoodService {
             menu = menuRepository.getReferenceById(request.getIdMenu());
             if (menu.getIdMenu() == null) throw new BadException(ErrorCode.USERNAME_INVALID);
         }
-        if(!ownerCheckingService.isOwner(menu))
+        if(!ownerCheckingService.isOwner(menu)){
+            System.out.println("212121212");
             throw new BadException(ErrorCode.ACCESS_DENIED);
+        }
         Food food = Food.builder()
                 .idFood(UUID.randomUUID().toString())
                 .menu(menu)
@@ -111,6 +113,18 @@ public class FoodService {
         List<FoodResponse> response = new ArrayList<>();
         for(var item : foodRepository.getFoodByIdTable(idTable).orElseThrow(() -> new BadException(ErrorCode.NOT_FOND))){
             response.add(new FoodResponse(item.getIdFood(),item.getName(),item.getPrice(), item.getImage()));
+        }
+        return response;
+    }
+
+    public List<FoodResponse> getFoodByIdTableForClient(String idTable) {
+        RestaurantTable restaurantTable = tableRepository.findById(idTable).orElseThrow(
+                () -> new BadException(ErrorCode.NOT_FOND)
+        );
+        List<Food> foodList = foodRepository.getFoodByIdRestaurantAndStatus(restaurantTable.getRestaurant().getIdRestaurant(),"Active");
+        List<FoodResponse> response = new ArrayList<>();
+        for(Food food : foodList){
+            response.add(new FoodResponse(food.getIdFood(),food.getName(),food.getPrice(),food.getImage()));
         }
         return response;
     }

@@ -13,5 +13,5 @@ public class MenuRequest {
     private String idMenu;
     private String idRestaurant;
     private String name;
-    private String status = "active";
+    private String status;
 }

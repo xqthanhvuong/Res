@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, String> {
+    Order findByFood_IdFoodAndBill_IdBill(String food_id, String bill_id);
 }

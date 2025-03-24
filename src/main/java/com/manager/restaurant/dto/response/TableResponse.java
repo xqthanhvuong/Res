@@ -11,5 +11,6 @@ import lombok.experimental.FieldDefaults;
 public class TableResponse {
     String idTable;
     String nameTable;
+    String mergedTo;
     String status;
 }

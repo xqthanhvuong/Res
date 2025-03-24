@@ -67,7 +67,6 @@ public enum ErrorCode {
     RESTAURANT_NOT_MATCH(1056,"The information is not located in the same restaurant." , HttpStatus.BAD_REQUEST ),
     ORDER_NOT_FOUND(1057, "Order not fond",HttpStatus.NOT_FOUND ),
     RESTAURANT_NOT_FOND(1053," Restaurant not fond" ,HttpStatus.NOT_FOUND ),
-    TABLE_NOT_FOND(1054, "Table not fond",HttpStatus.NOT_FOUND ),
     PHONE_NOT_FOND(1055, "Phone not found",HttpStatus.NOT_FOUND ),
     SMS_SEND_FAILED(1056, "Send sms failed",HttpStatus.INTERNAL_SERVER_ERROR ),
     EMAIL_NOT_FOND(1057, "Email not found",HttpStatus.NOT_FOUND ),

@@ -25,7 +25,8 @@ public class OwnerCheckingService {
         Account account = accountRepository.findByUsername(SecurityUtils.getCurrentUsername()).orElseThrow(
                 ()-> new BadException(ErrorCode.USER_NOT_EXISTED)
         );
-        return account.getRole().equals(AccountRole.Owner.name()) &&
+
+        return account.getRole().equals(AccountRole.Owner.toString()) &&
                 menu.getRestaurant().getIdRestaurant().equals(account.getRestaurant().getIdRestaurant());
     }
 
@@ -33,7 +34,6 @@ public class OwnerCheckingService {
         Account account = accountRepository.findByUsername(SecurityUtils.getCurrentUsername()).orElseThrow(
                 ()-> new BadException(ErrorCode.USER_NOT_EXISTED)
         );
-        return account.getRole().equals(AccountRole.Owner.name()) &&
-                table.getRestaurant().getIdRestaurant().equals(account.getRestaurant().getIdRestaurant());
+        return table.getRestaurant().getIdRestaurant().equals(account.getRestaurant().getIdRestaurant());
     }
 }

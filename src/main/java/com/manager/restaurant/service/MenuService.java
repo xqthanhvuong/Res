@@ -11,6 +11,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,6 +33,10 @@ public class MenuService {
                 .restaurant(restaurantRepository.getReferenceById(request.getIdRestaurant()))
                 .name(request.getName())
                 .build();
+        List<Menu> menus = menuRepository.findByRestaurant_IdRestaurant(request.getIdRestaurant());
+        if(ObjectUtils.isEmpty(menus)) {
+            menu.setStatus("Active");
+        }
         if(!ownerCheckingService.isOwner(menu))
             throw new BadException(ErrorCode.USER_IS_BLOCK);
         menuRepository.save(menu);
@@ -55,7 +60,18 @@ public class MenuService {
         Menu menu = menuRepository.getReferenceById(request.getIdMenu());
         if(menu.getIdMenu() == null) throw new BadException(ErrorCode.INVALID_KEY);
         if(!ownerCheckingService.isOwner(menu)) throw new BadException(ErrorCode.ACCESS_DENIED);
+        if(request.getStatus().equals("Active")){
+            menu.setStatus(request.getStatus());
+            Menu menuActive = menuRepository.findByRestaurant_IdRestaurantAndStatus(menu.getRestaurant().getIdRestaurant(), "Active");
+            if(ObjectUtils.isNotEmpty(menuActive) && !menuActive.equals(menu)){
+                menuActive.setStatus("Inactive");
+                menuRepository.save(menuActive);
+            }
+        }else{
+            menu.setStatus("Inactive");
+        }
         menu.setName(request.getName());
+
         menuRepository.save(menu);
         return "OK";
     }
