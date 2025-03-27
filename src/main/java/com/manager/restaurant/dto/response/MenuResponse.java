@@ -3,6 +3,8 @@ package com.manager.restaurant.dto.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.sql.Timestamp;
+
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -10,7 +12,8 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MenuResponse {
-    private String idMenu;
-    private String name;
-    private String status;
+    String idMenu;
+    Timestamp createAt;
+    String name;
+    String status;
 }

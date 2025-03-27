@@ -14,7 +14,7 @@ import java.util.Optional;
 @Repository
 public interface MenuRepository extends JpaRepository<Menu, String> {
     @Query("""
-        SELECT new com.manager.restaurant.dto.response.MenuResponse(m.idMenu, m.name, m.status) FROM Menu m
+        SELECT new com.manager.restaurant.dto.response.MenuResponse(m.idMenu, m.createdAt, m.name, m.status) FROM Menu m
         WHERE m.restaurant.idRestaurant = :idRestaurant
     """)
     Optional<List<MenuResponse>> getMenuByRestaurantId(@Param("idRestaurant") String idRestaurant);
