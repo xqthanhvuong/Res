@@ -45,6 +45,14 @@ public class AuthenticationController {
         return JsonResponse.success("Create staff success");
     }
 
+    @PutMapping("/update-employee/{idAccount}")
+    public JsonResponse<String> updateStaff(@PathVariable("idAccount") String idAccount, @RequestBody UpdateStaffRequest request){
+        userService.updateStaff(idAccount, request);
+        return JsonResponse.success("Update success");
+    }
+
+
+
     @GetMapping("/get-info/{userName}")
     public JsonResponse<AccountResponse> getInfo(@PathVariable String userName){
         return JsonResponse.success(userService.getInfo(userName));
@@ -72,6 +80,7 @@ public class AuthenticationController {
         userService.deleteAccount(idAccount);
         return JsonResponse.success("Delete success");
     }
+
 
     @GetMapping("/my-info")
     public JsonResponse<AccountResponse> getMyInfo() {

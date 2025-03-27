@@ -1,9 +1,6 @@
 package com.manager.restaurant.service;
 
-import com.manager.restaurant.dto.request.AccountRequest;
-import com.manager.restaurant.dto.request.AccountUpdateRequest;
-import com.manager.restaurant.dto.request.StaffRequest;
-import com.manager.restaurant.dto.request.UpdateDeviceRequest;
+import com.manager.restaurant.dto.request.*;
 import com.manager.restaurant.dto.response.AccountResponse;
 import com.manager.restaurant.entity.*;
 import com.manager.restaurant.exception.BadException;
@@ -124,5 +121,27 @@ public class UserService {
         );
         account.setStatus("Inactive");
         accountRepository.save(account);
+    }
+
+    public void updateStaff(String idAccount, UpdateStaffRequest request) {
+        if(!managerCheckingService.isManagerOrOwner()){
+            throw new BadException(ErrorCode.ACCESS_DENIED);
+        }
+        Account account = accountRepository.findById(idAccount).orElseThrow(
+                ()-> new BadException(ErrorCode.USER_NOT_EXISTED)
+        );
+        account.setPhone(request.getPhone());
+        account.setName(request.getName());
+        account.setRole(request.getRole().name());
+        StaffPayment staffPayment = staffPaymentRepository.findByAccount_Username(account.getUsername()).orElseThrow();
+        if(ObjectUtils.isNotEmpty(staffPayment)){
+            staffPayment.setSalary(request.getSalary());
+            staffPayment.setType(request.getType());
+            staffPayment.setBankAccountNumber(request.getBankNumber());
+            staffPayment.setBank(request.getBankName());
+            staffPaymentRepository.save(staffPayment);
+        }
+        accountRepository.save(account);
+
     }
 }
