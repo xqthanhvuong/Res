@@ -45,6 +45,11 @@ public class AuthenticationController {
         return JsonResponse.success("Create staff success");
     }
 
+    @GetMapping("/get-info/{userName}")
+    public JsonResponse<AccountResponse> getInfo(@PathVariable String userName){
+        return JsonResponse.success(userService.getInfo(userName));
+    }
+
     @PostMapping("/update-device-token")
     public JsonResponse<String> updateDeviceToken(@RequestBody UpdateDeviceRequest request){
         userService.updateDeviceToken(request);
@@ -60,6 +65,12 @@ public class AuthenticationController {
     public JsonResponse<?> logout() throws ParseException {
         authenticationService.logout();
         return JsonResponse.success(null);
+    }
+
+    @DeleteMapping("/{idAccount}")
+    public JsonResponse<String> delete(@PathVariable String idAccount){
+        userService.deleteAccount(idAccount);
+        return JsonResponse.success("Delete success");
     }
 
     @GetMapping("/my-info")

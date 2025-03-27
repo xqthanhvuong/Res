@@ -58,9 +58,18 @@ public class StaffPaymentService {
         int workDays = workDayRepository
                 .countWorkDaysByAccount_UsernameAndWorkDateBetween(staffUsername, start, end)
                 .orElse(0);
+        Account account = accountRepository.findByUsername(staffUsername).orElseThrow(
+                () -> new BadException(ErrorCode.USER_NOT_EXISTED)
+        );
         // payment = work day * salary
         response = StaffPaymentResponse.builder()
+                .userId(account.getIdAccount())
+                .role(account.getRole())
                 .username(staffUsername)
+                .name(account.getName())
+                .workStartDate(account.getCreatedAt().toString())
+                .baseSalary(staffPayment.getSalary())
+                .shifts(workDays)
                 .payment(workDays * staffPayment.getSalary())
                 .type(staffPayment.getType())
                 .bankAccountNumber(staffPayment.getBankAccountNumber())
@@ -80,9 +89,18 @@ public class StaffPaymentService {
         for(var workDay : workDays) {
             totalHours += (int) getWorkHourPerDay(workDay);
         }
+        Account account = accountRepository.findByUsername(staffUsername).orElseThrow(
+                ()-> new BadException(ErrorCode.USER_NOT_EXISTED)
+        );
         // payment = hours * salary
         response = StaffPaymentResponse.builder()
                 .username(staffUsername)
+                .name(account.getName())
+                .baseSalary(staffPayment.getSalary())
+                .role(account.getRole())
+                .shifts(totalHours)
+                .workStartDate(account.getCreatedAt().toString())
+                .userId(account.getIdAccount())
                 .payment(totalHours * staffPayment.getSalary())
                 .type(staffPayment.getType())
                 .bankAccountNumber(staffPayment.getBankAccountNumber())

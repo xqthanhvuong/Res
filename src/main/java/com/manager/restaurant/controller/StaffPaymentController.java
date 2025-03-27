@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class StaffPaymentController {
-    final StaffPaymentService staffPaymentService;
+    StaffPaymentService staffPaymentService;
 
     @GetMapping("/get-salary/{staffUsername}/{month}/{year}")
     public JsonResponse<StaffPaymentResponse> getStaffSalary(

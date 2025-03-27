@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class WorkDayController {
-    final WorkDayService workDayService;
+    WorkDayService workDayService;
 
     // Get work day by id
     @GetMapping("/get-by-id/{idWorkDay}")

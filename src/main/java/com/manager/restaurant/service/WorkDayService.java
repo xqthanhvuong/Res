@@ -38,7 +38,7 @@ public class WorkDayService {
     final StaffPaymentRepository staffPaymentRepository;
 
     public WorkDayResponse getById(String idWorkDay) {
-        if(!managerCheckingService.isManager()) throw new BadException(ErrorCode.ACCESS_DENIED);
+        if(!managerCheckingService.isManagerOrOwner()) throw new BadException(ErrorCode.ACCESS_DENIED);
         var workDay = workDayRepository.getReferenceById(idWorkDay);
         if(workDay.getIdWorkDay() == null) throw new BadException(ErrorCode.INVALID_KEY);
         return new WorkDayResponse(workDay);
@@ -101,7 +101,7 @@ public class WorkDayService {
     }
 
     public String createWorkDay(CreateWorkDayRequest request) {
-        if(!managerCheckingService.isManager()) throw new BadException(ErrorCode.ACCESS_DENIED);
+        if(!managerCheckingService.isManagerOrOwner()) throw new BadException(ErrorCode.ACCESS_DENIED);
         var account = accountRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new BadException(ErrorCode.INVALID_KEY));
         // Get staff payment to get payment type
@@ -170,7 +170,7 @@ public class WorkDayService {
     }
 
     public String updateWorkDay(WorkDayRequest request) {
-        if(!managerCheckingService.isManager()) throw new BadException(ErrorCode.ACCESS_DENIED);
+        if(!managerCheckingService.isManagerOrOwner()) throw new BadException(ErrorCode.ACCESS_DENIED);
         if(request.getIdWorkDay() == null) throw new BadException(ErrorCode.INVALID_KEY);
         // get workday and update
         var workDay = workDayRepository.getReferenceById(request.getIdWorkDay());
@@ -186,7 +186,7 @@ public class WorkDayService {
 
     public String deleteWorkDay(String idWorkDay) {
         //check role
-        if(!managerCheckingService.isManager()) throw new BadException(ErrorCode.ACCESS_DENIED);
+        if(!managerCheckingService.isManagerOrOwner()) throw new BadException(ErrorCode.ACCESS_DENIED);
         workDayRepository.deleteById(idWorkDay);
         return "Ok";
     }

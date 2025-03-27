@@ -20,10 +20,10 @@ import org.springframework.stereotype.Service;
 public class ManagerCheckingService {
     AccountRepository accountRepository;
 
-    public boolean isManager(){
+    public boolean isManagerOrOwner(){
         Account account = accountRepository.findByUsername(SecurityUtils.getCurrentUsername()).orElseThrow(
                 ()-> new BadException(ErrorCode.USER_NOT_EXISTED)
         );
-        return account.getRole().equals(AccountRole.Manager.name());
+        return account.getRole().equals(AccountRole.Manager.name()) || account.getRole().equals(AccountRole.Owner.name());
     }
 }

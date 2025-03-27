@@ -9,9 +9,15 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StaffPaymentResponse {
+    String userId;
+    String name;
+    String role;
+    float shifts;
+    float baseSalary;
     String username;
     int payment;
     String type;
     String bankAccountNumber;
     String bank;
+    String workStartDate;
 }

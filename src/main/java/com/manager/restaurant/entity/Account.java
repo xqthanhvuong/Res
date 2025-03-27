@@ -67,6 +67,7 @@ public class Account {
         if(ObjectUtils.isEmpty(idAccount)){
             idAccount = UUID.randomUUID().toString();
         }
+        status = "Active";
     }
 
     @PreUpdate

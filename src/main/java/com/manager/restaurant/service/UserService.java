@@ -12,11 +12,13 @@ import com.manager.restaurant.mapper.AccountMapper;
 import com.manager.restaurant.repository.AccountRepository;
 import com.manager.restaurant.repository.RestaurantRepository;
 import com.manager.restaurant.repository.StaffPaymentRepository;
+import com.manager.restaurant.repository.WorkDayRepository;
 import com.manager.restaurant.until.SecurityUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,10 @@ public class UserService {
     AccountMapper accountMapper;
     RestaurantRepository restaurantRepository;
     StaffPaymentRepository staffPaymentRepository;
+    ManagerCheckingService managerCheckingService;
+    WorkDayRepository workDayRepository;
+
+
     public void createAccount(AccountRequest accountRequest) {
         if(accountRepository.existsByUsername(accountRequest.getUsername())){
             throw new BadException(ErrorCode.USER_EXISTED);
@@ -83,5 +89,23 @@ public class UserService {
                 () -> new BadException(ErrorCode.USER_NOT_EXISTED)
         );
         return  accountMapper.toAccountResponse(account);
+    }
+
+    public AccountResponse getInfo(String userName) {
+        Account account = accountRepository.findByUsername(userName).orElseThrow(
+                () -> new BadException(ErrorCode.USER_NOT_EXISTED)
+        );
+        return  accountMapper.toAccountResponse(account);
+    }
+
+    public void deleteAccount(String idAccount) {
+        if(!managerCheckingService.isManagerOrOwner()){
+            throw new BadException(ErrorCode.ACCESS_DENIED);
+        }
+        Account account = accountRepository.findByIdAccount(idAccount).orElseThrow(
+                () -> new BadException(ErrorCode.USER_NOT_EXISTED)
+        );
+        account.setStatus("Inactive");
+        accountRepository.save(account);
     }
 }
