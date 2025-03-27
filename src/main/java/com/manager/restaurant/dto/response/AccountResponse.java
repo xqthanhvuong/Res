@@ -15,4 +15,8 @@ public class AccountResponse {
     String role;
     String phone;
     String avt;
+    String bankNumber;
+    String bankName;
+    String paymentType;
+    int salary;
 }

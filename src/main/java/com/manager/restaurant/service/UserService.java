@@ -12,7 +12,6 @@ import com.manager.restaurant.mapper.AccountMapper;
 import com.manager.restaurant.repository.AccountRepository;
 import com.manager.restaurant.repository.RestaurantRepository;
 import com.manager.restaurant.repository.StaffPaymentRepository;
-import com.manager.restaurant.repository.WorkDayRepository;
 import com.manager.restaurant.until.SecurityUtils;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -90,14 +89,30 @@ public class UserService {
         Account account = accountRepository.findByUsername(SecurityUtils.getCurrentUsername()).orElseThrow(
                 () -> new BadException(ErrorCode.USER_NOT_EXISTED)
         );
-        return  accountMapper.toAccountResponse(account);
+        AccountResponse accountResponse =  accountMapper.toAccountResponse(account);
+        StaffPayment staffPayment = staffPaymentRepository.findByAccount_Username(account.getUsername()).orElseThrow();
+        if(ObjectUtils.isNotEmpty(staffPayment)){
+            accountResponse.setBankName(staffPayment.getBank());
+            accountResponse.setBankNumber(staffPayment.getBankAccountNumber());
+            accountResponse.setSalary(staffPayment.getSalary());
+            accountResponse.setPaymentType(staffPayment.getType());
+        }
+        return  accountResponse;
     }
 
     public AccountResponse getInfo(String userName) {
         Account account = accountRepository.findByUsername(userName).orElseThrow(
                 () -> new BadException(ErrorCode.USER_NOT_EXISTED)
         );
-        return  accountMapper.toAccountResponse(account);
+        AccountResponse accountResponse =  accountMapper.toAccountResponse(account);
+        StaffPayment staffPayment = staffPaymentRepository.findByAccount_Username(userName).orElseThrow();
+        if(ObjectUtils.isNotEmpty(staffPayment)){
+            accountResponse.setBankName(staffPayment.getBank());
+            accountResponse.setBankNumber(staffPayment.getBankAccountNumber());
+            accountResponse.setSalary(staffPayment.getSalary());
+            accountResponse.setPaymentType(staffPayment.getType());
+        }
+        return accountResponse;
     }
 
     public void deleteAccount(String idAccount) {

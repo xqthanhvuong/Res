@@ -5,6 +5,7 @@
     import com.manager.restaurant.dto.response.AuthenticationResponse;
     import com.manager.restaurant.dto.response.IntrospectResponse;
     import com.manager.restaurant.entity.Account;
+    import com.manager.restaurant.entity.AccountStatus;
     import com.manager.restaurant.entity.InvalidatedToken;
     import com.manager.restaurant.exception.BadException;
     import com.manager.restaurant.exception.ErrorCode;
@@ -38,7 +39,7 @@
 
 
         public AuthenticationResponse authenticate(AuthenticationRequest request) {
-            Account user = accountRepository.findByUsername(request.getUsername()).orElseThrow(
+            Account user = accountRepository.findByUsernameAndStatus(request.getUsername(), AccountStatus.Active.name()).orElseThrow(
                     () -> new BadException(ErrorCode.USER_NOT_EXISTED));
             PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
             if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
