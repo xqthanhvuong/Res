@@ -18,5 +18,6 @@ public class AccountResponse {
     String bankNumber;
     String bankName;
     String paymentType;
+    String idRes;
     int salary;
 }

@@ -87,6 +87,9 @@ public class UserService {
                 () -> new BadException(ErrorCode.USER_NOT_EXISTED)
         );
         AccountResponse accountResponse =  accountMapper.toAccountResponse(account);
+        if(ObjectUtils.isNotEmpty(account.getRestaurant())){
+            accountResponse.setIdRes(account.getRestaurant().getIdRestaurant());
+        }
         StaffPayment staffPayment = staffPaymentRepository.findByAccount_Username(account.getUsername()).orElseThrow();
         if(ObjectUtils.isNotEmpty(staffPayment)){
             accountResponse.setBankName(staffPayment.getBank());
