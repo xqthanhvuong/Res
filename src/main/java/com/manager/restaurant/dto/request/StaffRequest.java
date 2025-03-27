@@ -16,4 +16,8 @@ public class StaffRequest {
     String phone;
     AccountRole role;
     String idRestaurant;
+    int salary;
+    String type;
+    String bankNumber;
+    String bankName;
 }

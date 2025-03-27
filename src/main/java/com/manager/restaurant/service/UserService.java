@@ -33,7 +33,6 @@ public class UserService {
     RestaurantRepository restaurantRepository;
     StaffPaymentRepository staffPaymentRepository;
     ManagerCheckingService managerCheckingService;
-    WorkDayRepository workDayRepository;
 
 
     public void createAccount(AccountRequest accountRequest) {
@@ -69,8 +68,11 @@ public class UserService {
         account.setRestaurant(restaurant);
         account.setStatus(AccountStatus.Active.toString());
         StaffPayment staffPayment = StaffPayment.builder()
+                .salary(staffRequest.getSalary())
+                .type(staffRequest.getType())
+                .bankAccountNumber(staffRequest.getBankNumber())
+                .bank(staffRequest.getBankName())
                 .account(account)
-                .salary(0)
                 .build();
         accountRepository.save(account);
         staffPaymentRepository.save(staffPayment);

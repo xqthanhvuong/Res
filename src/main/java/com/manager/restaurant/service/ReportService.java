@@ -39,7 +39,7 @@ public class ReportService {
     }
 
     public String createReport(ReportRequest request) {
-        if (!managerCheckingService.isManager()) throw new BadException(ErrorCode.ACCESS_DENIED);
+        if (!managerCheckingService.isManagerOrOwner()) throw new BadException(ErrorCode.ACCESS_DENIED);
         if(request == null || request.getIdWorkDay() == null) throw new BadException(ErrorCode.INVALID_KEY);
         Report report = Report.builder()
                 .idReport(UUID.randomUUID().toString())
@@ -52,7 +52,7 @@ public class ReportService {
     }
 
     public String updateRepost(ReportRequest request) {
-        if (!managerCheckingService.isManager()) throw new BadException(ErrorCode.ACCESS_DENIED);
+        if (!managerCheckingService.isManagerOrOwner()) throw new BadException(ErrorCode.ACCESS_DENIED);
         if(request == null || request.getIdReport() == null || request.getIdWorkDay() == null) throw new BadException(ErrorCode.INVALID_KEY);
         Report report = Report.builder()
                 .idReport(request.getIdReport())
@@ -68,7 +68,7 @@ public class ReportService {
     }
 
     public String delete(String idReport) {
-        if (!managerCheckingService.isManager()) throw new BadException(ErrorCode.ACCESS_DENIED);
+        if (!managerCheckingService.isManagerOrOwner()) throw new BadException(ErrorCode.ACCESS_DENIED);
         reportRepository.deleteById(idReport);
         return "ok";
     }
