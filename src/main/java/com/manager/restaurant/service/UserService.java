@@ -41,7 +41,7 @@ public class UserService {
         Account account = accountMapper.toAccount(accountRequest);
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         account.setPassword(passwordEncoder.encode(account.getPassword()));
-        account.setStatus(AccountStatus.Inactive.toString());
+        account.setStatus(AccountStatus.Active.toString());
         account.setRole(AccountRole.Owner.name());
         accountRepository.save(account);
     }
@@ -63,6 +63,8 @@ public class UserService {
         Account account = accountMapper.staffToAccount(staffRequest);
         account.setRestaurant(restaurant);
         account.setStatus(AccountStatus.Active.toString());
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        account.setPassword(passwordEncoder.encode(account.getPassword()));
         StaffPayment staffPayment = StaffPayment.builder()
                 .salary(staffRequest.getSalary())
                 .type(staffRequest.getType())
