@@ -34,6 +34,9 @@ public class Food {
     String image;
 
     @Column(nullable = false)
+    String type;
+
+    @Column(nullable = false)
     Float price;
 
     @Column(name = "created_at", nullable = false)

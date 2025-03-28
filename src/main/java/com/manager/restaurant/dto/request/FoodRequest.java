@@ -10,9 +10,10 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FoodRequest {
-    private String idFood;
-    private String idMenu;
-    private String name;
-    private double price = 0.0;
-    private String image;
+    String idFood;
+    String idMenu;
+    String name;
+    double price = 0.0;
+    String image;
+    String type;
 }

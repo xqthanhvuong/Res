@@ -14,7 +14,7 @@ import java.util.Optional;
 @Repository
 public interface FoodRepository extends JpaRepository<Food, String> {
     @Query("""
-        SELECT new com.manager.restaurant.dto.response.FoodResponse(f.idFood, f.name, f.price, f.image)
+        SELECT new com.manager.restaurant.dto.response.FoodResponse(f.idFood, f.name, f.price, f.image, f.type)
         FROM Food f
         WHERE f.menu.idMenu = :idMenu
             AND EXISTS (SELECT 1 FROM Menu m WHERE m.idMenu = :idMenu )

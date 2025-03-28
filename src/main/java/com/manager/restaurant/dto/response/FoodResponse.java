@@ -11,8 +11,9 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FoodResponse {
-    private String idFood;
-    private String name;
-    private Float price;
-    private String image;
+    String idFood;
+    String name;
+    Float price;
+    String image;
+    String type;
 }

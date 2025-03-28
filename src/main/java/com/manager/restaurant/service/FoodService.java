@@ -27,7 +27,6 @@ public class FoodService {
 
     FoodRepository foodRepository;
     MenuRepository menuRepository;
-    AccountRepository accountRepository;
     TableRepository tableRepository;
     OwnerCheckingService ownerCheckingService;
 
@@ -112,7 +111,7 @@ public class FoodService {
             throw new BadException(ErrorCode.ACCESS_DENIED);
         List<FoodResponse> response = new ArrayList<>();
         for(var item : foodRepository.getFoodByIdTable(idTable).orElseThrow(() -> new BadException(ErrorCode.NOT_FOND))){
-            response.add(new FoodResponse(item.getIdFood(),item.getName(),item.getPrice(), item.getImage()));
+            response.add(new FoodResponse(item.getIdFood(),item.getName(),item.getPrice(), item.getImage(), item.getType()));
         }
         return response;
     }
@@ -124,7 +123,7 @@ public class FoodService {
         List<Food> foodList = foodRepository.getFoodByIdRestaurantAndStatus(restaurantTable.getRestaurant().getIdRestaurant(),"Active");
         List<FoodResponse> response = new ArrayList<>();
         for(Food food : foodList){
-            response.add(new FoodResponse(food.getIdFood(),food.getName(),food.getPrice(),food.getImage()));
+            response.add(new FoodResponse(food.getIdFood(),food.getName(),food.getPrice(),food.getImage(), food.getType()));
         }
         return response;
     }
