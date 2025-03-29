@@ -243,6 +243,9 @@ public class BillService {
         Order order = orderRepository.findById(idOrder).orElseThrow(
                 ()-> new BadException(ErrorCode.ORDER_NOT_FOUND)
         );
+        if(order.getStatus().equals("Received")){
+            throw new BadException(ErrorCode.CANT_DELETE);
+        }
         orderRepository.delete(order);
     }
 
