@@ -393,4 +393,12 @@ public class BillService {
             throw new BadException(ErrorCode.CANT_PAY);
         }
     }
+
+    public void updateReceivedOrder(String idOrder) {
+        Order order = orderRepository.findById(idOrder).orElseThrow(
+                ()-> new BadException(ErrorCode.ORDER_NOT_FOUND)
+        );
+        order.setStatus("Received");
+        orderRepository.save(order);
+    }
 }

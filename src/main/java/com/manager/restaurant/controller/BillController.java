@@ -45,9 +45,16 @@ public class BillController {
         return JsonResponse.success("Cancel success");
     }
 
-    @PutMapping("order-update/{idOrder}")
+    @PutMapping("order-update-complete/{idOrder}")
     public JsonResponse<String> updateOrderDone(@PathVariable("idOrder") String idOrder){
         billService.updateDoneOrder(idOrder);
+        return JsonResponse.success("Update success");
+    }
+
+
+    @PutMapping("order-update-received/{idOrder}")
+    public JsonResponse<String> updateOrderReceived(@PathVariable("idOrder") String idOrder){
+        billService.updateReceivedOrder(idOrder);
         return JsonResponse.success("Update success");
     }
 
@@ -56,6 +63,10 @@ public class BillController {
         billService.closeBill(idTable);
         return JsonResponse.success("Update success");
     }
+
+
+
+
 
     @GetMapping("/get-all-order/{idRestaurant}")
     public JsonResponse<List<BillResponse>> getAllOrder(@PathVariable("idRestaurant") String idRestaurant){
