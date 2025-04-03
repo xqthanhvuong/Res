@@ -5,10 +5,12 @@ import org.springframework.stereotype.Service;
 import com.manager.restaurant.dto.request.PaymentRequest;
 import com.manager.restaurant.dto.response.PaymentResponse;
 import com.manager.restaurant.entity.Payment;
+import com.manager.restaurant.entity.Restaurant;
 import com.manager.restaurant.exception.BadException;
 import com.manager.restaurant.exception.ErrorCode;
 import com.manager.restaurant.mapper.PaymentMapper;
 import com.manager.restaurant.repository.PaymentRepository;
+import com.manager.restaurant.repository.RestaurantRepository;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -27,15 +29,23 @@ public class PaymentService {
     // Inject Payment Mapper
     PaymentMapper paymentMapper;
 
+    RestaurantRepository restaurantRepository;
+
     // Service to create payment
     public PaymentResponse createPayment(PaymentRequest paymentRequest) {
+
         if (paymentRequest == null) {
             throw new BadException(ErrorCode.INVALID_REQUEST);
         }
-
-        Payment newPayment = paymentMapper.toPayment(paymentRequest);
+        Payment newPayment = Payment.builder()
+                            .idPayment(paymentRequest.getIdPayment())
+                            .restaurant(restaurantRepository.getReferenceById(paymentRequest.getIdRestaurant()))
+                            .partnerCode(paymentRequest.getPartnerCode())
+                            .accessKey(paymentRequest.getAccessKey())
+                            .secretKey(paymentRequest.getSecretKey())
+                            .build();
         Payment createdPayment = paymentRepository.save(newPayment);
-        
+
         return paymentMapper.toPaymentResponse(createdPayment);
     }
 
