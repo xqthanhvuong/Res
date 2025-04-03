@@ -92,13 +92,13 @@ public class UserService {
         if(ObjectUtils.isNotEmpty(account.getRestaurant())){
             accountResponse.setIdRes(account.getRestaurant().getIdRestaurant());
         }
-        StaffPayment staffPayment = staffPaymentRepository.findByAccount_Username(account.getUsername()).orElseThrow();
-        if(ObjectUtils.isNotEmpty(staffPayment)){
+        try {
+            StaffPayment staffPayment = staffPaymentRepository.findByAccount_Username(account.getUsername()).orElseThrow();
             accountResponse.setBankName(staffPayment.getBank());
             accountResponse.setBankNumber(staffPayment.getBankAccountNumber());
             accountResponse.setSalary(staffPayment.getSalary());
             accountResponse.setPaymentType(staffPayment.getType());
-        }
+        } catch(Exception e) { }
         return  accountResponse;
     }
 
@@ -107,13 +107,13 @@ public class UserService {
                 () -> new BadException(ErrorCode.USER_NOT_EXISTED)
         );
         AccountResponse accountResponse =  accountMapper.toAccountResponse(account);
-        StaffPayment staffPayment = staffPaymentRepository.findByAccount_Username(userName).orElseThrow();
-        if(ObjectUtils.isNotEmpty(staffPayment)){
+        try {
+            StaffPayment staffPayment = staffPaymentRepository.findByAccount_Username(userName).orElseThrow();
             accountResponse.setBankName(staffPayment.getBank());
             accountResponse.setBankNumber(staffPayment.getBankAccountNumber());
             accountResponse.setSalary(staffPayment.getSalary());
             accountResponse.setPaymentType(staffPayment.getType());
-        }
+        } catch (Exception e) { }
         return accountResponse;
     }
 
@@ -138,14 +138,14 @@ public class UserService {
         account.setPhone(request.getPhone());
         account.setName(request.getName());
         account.setRole(request.getRole().name());
-        StaffPayment staffPayment = staffPaymentRepository.findByAccount_Username(account.getUsername()).orElseThrow();
-        if(ObjectUtils.isNotEmpty(staffPayment)){
+        try {
+            StaffPayment staffPayment = staffPaymentRepository.findByAccount_Username(account.getUsername()).orElseThrow();
             staffPayment.setSalary(request.getSalary());
             staffPayment.setType(request.getType());
             staffPayment.setBankAccountNumber(request.getBankNumber());
             staffPayment.setBank(request.getBankName());
             staffPaymentRepository.save(staffPayment);
-        }
+        } catch (Exception e) { }
         accountRepository.save(account);
 
     }
