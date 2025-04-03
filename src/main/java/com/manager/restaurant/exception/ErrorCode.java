@@ -76,7 +76,9 @@ public enum ErrorCode {
     PAYMENT_NOT_FOUND(1061, "Payment not found.", HttpStatus.NOT_FOUND),
     UPDATE_FAILED(1062, "Update failed.", HttpStatus.INTERNAL_SERVER_ERROR),
     INVALID_REQUEST(1062, "Invalid request.", HttpStatus.BAD_REQUEST),
-    CANT_PAY(1063,"Can't pay for this bill" , HttpStatus.BAD_REQUEST);
+    CANT_PAY(1063,"Can't pay for this bill" , HttpStatus.BAD_REQUEST),
+    CANT_DELETE_RES(1041,"The restaurant can't be delete because its table is in use" ,HttpStatus.FORBIDDEN ),
+    ;
 
 
     private final int code;

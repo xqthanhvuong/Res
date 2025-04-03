@@ -2,15 +2,13 @@ package com.manager.restaurant.service;
 
 import com.manager.restaurant.dto.request.TableRequest;
 import com.manager.restaurant.dto.response.TableResponse;
-import com.manager.restaurant.entity.Account;
-import com.manager.restaurant.entity.AccountRole;
-import com.manager.restaurant.entity.Restaurant;
-import com.manager.restaurant.entity.RestaurantTable;
+import com.manager.restaurant.entity.*;
 import com.manager.restaurant.exception.BadException;
 import com.manager.restaurant.exception.ErrorCode;
 import com.manager.restaurant.mapper.TableMapper;
 import com.manager.restaurant.repository.AccountRepository;
 import com.manager.restaurant.repository.RestaurantRepository;
+import com.manager.restaurant.repository.RestaurantsOfHostRepository;
 import com.manager.restaurant.repository.TableRepository;
 import com.manager.restaurant.until.SecurityUtils;
 import lombok.AccessLevel;
@@ -31,16 +29,25 @@ public class TableService {
     RestaurantRepository restaurantRepository;
     AccountRepository accountRepository;
     TableMapper tableMapper;
+    RestaurantsOfHostRepository restaurantsOfHostRepository;
 
     public void createTable(TableRequest request) {
         executeIfOwner(request, req -> {
             Restaurant restaurant = restaurantRepository.findById(req.getIdRestaurant()).orElseThrow(
                     () -> new BadException(ErrorCode.RESTAURANT_NOT_FOUND)
             );
-            RestaurantTable table = new RestaurantTable();
-            table.setNameTable(request.getNameTable());
-            table.setRestaurant(restaurant);
-            tableRepository.save(table);
+            Account account = accountRepository.findByUsername(SecurityUtils.getCurrentUsername()).orElseThrow(
+                    ()-> new BadException(ErrorCode.USER_NOT_EXISTED)
+            );
+            if(restaurantsOfHostRepository.existsById(new RestaurantsOfHostPK(restaurant.getIdRestaurant(),account.getIdAccount()))
+                    || account.getRestaurant().getIdRestaurant().equals(restaurant.getIdRestaurant())){
+                RestaurantTable table = new RestaurantTable();
+                table.setNameTable(request.getNameTable());
+                table.setRestaurant(restaurant);
+                tableRepository.save(table);
+            }else {
+                throw new BadException(ErrorCode.ACCESS_DENIED);
+            }
         });
     }
 
@@ -50,7 +57,15 @@ public class TableService {
             RestaurantTable table = tableRepository.findById(id).orElseThrow(
                     () -> new BadException(ErrorCode.TABLE_NOT_FOUND)
             );
-            tableRepository.delete(table);
+            Account account = accountRepository.findByUsername(SecurityUtils.getCurrentUsername()).orElseThrow(
+                    ()-> new BadException(ErrorCode.USER_NOT_EXISTED)
+            );
+            if(restaurantsOfHostRepository.existsById(new RestaurantsOfHostPK(table.getRestaurant().getIdRestaurant(),account.getIdAccount()))
+                    || account.getRestaurant().getIdRestaurant().equals(table.getRestaurant().getIdRestaurant())){
+                tableRepository.delete(table);
+            }else {
+                throw new BadException(ErrorCode.ACCESS_DENIED);
+            }
         });
     }
 
@@ -58,7 +73,11 @@ public class TableService {
         Account account = accountRepository.findByUsername(SecurityUtils.getCurrentUsername()).orElseThrow(
                 ()-> new BadException(ErrorCode.USER_NOT_EXISTED)
         );
-        if(account.getRestaurant().getIdRestaurant().equals(idRestaurant)) {
+        Restaurant restaurant = restaurantRepository.findById(idRestaurant).orElseThrow(
+                () -> new BadException(ErrorCode.RESTAURANT_NOT_FOUND)
+        );
+        if(restaurantsOfHostRepository.existsById(new RestaurantsOfHostPK(idRestaurant, account.getIdAccount()))
+                || account.getRestaurant().getIdRestaurant().equals(idRestaurant)) {
             List<RestaurantTable> tables = tableRepository.findByRestaurant_IdRestaurant(idRestaurant);
             List<TableResponse> rs = new ArrayList<>();
             for(RestaurantTable table : tables) {

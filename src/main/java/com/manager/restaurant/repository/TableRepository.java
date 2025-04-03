@@ -1,6 +1,7 @@
 package com.manager.restaurant.repository;
 
 import com.manager.restaurant.dto.response.chart.TableChart;
+import com.manager.restaurant.entity.Restaurant;
 import com.manager.restaurant.entity.RestaurantTable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -43,4 +44,6 @@ public interface TableRepository extends JpaRepository<RestaurantTable, String> 
     @Transactional
     @Query("update RestaurantTable t set t.status =:status where t.mergedTo = :mergeTo")
     void updateStatus(@Param("mergeTo") String mergeTo, @Param("status") String status);
+
+    Boolean existsByRestaurantAndStatus(Restaurant restaurant, String status);
 }

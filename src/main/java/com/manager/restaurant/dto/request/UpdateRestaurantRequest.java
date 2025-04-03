@@ -12,4 +12,5 @@ import lombok.experimental.FieldDefaults;
 public class UpdateRestaurantRequest {
     String idRestaurant;
     String name;
+    String status;
 }

@@ -5,7 +5,6 @@ import com.manager.restaurant.dto.response.FoodResponse;
 import com.manager.restaurant.entity.*;
 import com.manager.restaurant.exception.BadException;
 import com.manager.restaurant.exception.ErrorCode;
-import com.manager.restaurant.repository.AccountRepository;
 import com.manager.restaurant.repository.FoodRepository;
 import com.manager.restaurant.repository.MenuRepository;
 import com.manager.restaurant.repository.TableRepository;
@@ -123,6 +122,9 @@ public class FoodService {
         RestaurantTable restaurantTable = tableRepository.findById(idTable).orElseThrow(
                 () -> new BadException(ErrorCode.NOT_FOND)
         );
+        if(restaurantTable.getRestaurant().getStatus().equals("Inactive")){
+            throw new BadException(ErrorCode.ACCESS_DENIED);
+        }
         List<Food> foodList = foodRepository.getFoodByIdRestaurantAndStatus(restaurantTable.getRestaurant().getIdRestaurant(),"Active");
         List<FoodResponse> response = new ArrayList<>();
         for(Food food : foodList){

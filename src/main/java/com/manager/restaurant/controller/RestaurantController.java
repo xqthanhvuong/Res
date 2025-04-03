@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/restaurant")
 @RequiredArgsConstructor
@@ -26,7 +28,7 @@ public class RestaurantController {
 
     @PostMapping("/update-name")
     public JsonResponse<String> updateName(@RequestBody UpdateRestaurantRequest request) {
-        restaurantService.updateNameRestaurant(request);
+        restaurantService.updateRestaurant(request);
         return JsonResponse.success("Update restaurant successfully");
     }
 
@@ -37,7 +39,7 @@ public class RestaurantController {
     }
 
     @GetMapping("/get-my-restaurant")
-    public JsonResponse<RestaurantResponse> getMyRestaurant() {
+    public JsonResponse<List<RestaurantResponse>> getMyRestaurant() {
         return JsonResponse.success(restaurantService.getMyRestaurant());
     }
 
