@@ -74,6 +74,7 @@ public class FoodService {
         food.setName(request.getName());
         food.setPrice((float) request.getPrice());
         food.setImage(request.getImage());
+        food.setType(request.getType());
         foodRepository.save(food);
         return "ok";
     }
@@ -103,6 +104,7 @@ public class FoodService {
                 .name(food.getName())
                 .price(food.getPrice())
                 .image(food.getImage())
+                .type(food.getType())
                 .build();
     }
 
