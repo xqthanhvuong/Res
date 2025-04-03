@@ -48,7 +48,7 @@ public class RestaurantService {
                 ()-> new BadException(ErrorCode.RESTAURANT_NOT_FOUND)
         );
         restaurant.setName(request.getName());
-        restaurant.setAddress(restaurant.getAddress());
+        restaurant.setAddress(request.getAddress());
         if(!request.getStatus().equals("Active")){
             restaurant.setStatus("Inactive");
             List<Account> accounts = accountRepository.findAllByRestaurant_IdRestaurant(restaurant.getIdRestaurant());

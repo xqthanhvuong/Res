@@ -12,4 +12,5 @@ public class RestaurantResponse {
     String idRestaurant;
     String name;
     String status;
+    String address;
 }
