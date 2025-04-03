@@ -11,4 +11,5 @@ import lombok.experimental.FieldDefaults;
 public class RestaurantRequest {
     String idAccount;
     String name;
+    String address;
 }

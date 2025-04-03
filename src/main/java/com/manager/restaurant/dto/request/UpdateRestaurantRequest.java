@@ -13,4 +13,5 @@ public class UpdateRestaurantRequest {
     String idRestaurant;
     String name;
     String status;
+    String address;
 }

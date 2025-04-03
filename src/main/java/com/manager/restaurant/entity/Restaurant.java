@@ -30,6 +30,9 @@ public class Restaurant {
     @Column(nullable = false)
     String status;
 
+    @Column(nullable = false)
+    String address;
+
     @Column(name = "created_at", nullable = false)
     Timestamp createdAt;
 
