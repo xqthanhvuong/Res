@@ -48,6 +48,7 @@ public class FoodService {
                 .name(request.getName())
                 .price((float)request.getPrice())
                 .image(request.getImage())
+                .type(request.getType())
                 .build();
         foodRepository.save(food);
         return "ok";
