@@ -35,4 +35,13 @@ public class OwnerCheckingService {
         return account.getRole().equals(AccountRole.Owner.toString()) &&
                 restaurantsOfHostRepository.existsById(new RestaurantsOfHostPK(table.getRestaurant().getIdRestaurant(),account.getIdAccount()));
     }
+
+    public boolean iStaffOwner(Account staff){
+        String idRestaurant = staff.getRestaurant().getIdRestaurant();
+        Account account = accountRepository.findByUsername(SecurityUtils.getCurrentUsername()).orElseThrow(
+                ()-> new BadException(ErrorCode.USER_NOT_EXISTED)
+        );
+        return account.getRole().equals(AccountRole.Owner.toString()) &&
+                restaurantsOfHostRepository.existsById(new RestaurantsOfHostPK(idRestaurant,account.getIdAccount()));
+    }
 }

@@ -1,5 +1,6 @@
 package com.manager.restaurant.service;
 
+import com.manager.restaurant.dto.request.PaymentInfoRequest;
 import com.manager.restaurant.dto.response.StaffPaymentResponse;
 import com.manager.restaurant.entity.*;
 import com.manager.restaurant.exception.BadException;
@@ -26,14 +27,15 @@ import java.util.List;
 @Service
 @Slf4j
 public class StaffPaymentService {
-    final StaffPaymentRepository staffPaymentRepository;
-    final WorkDayRepository workDayRepository;
-    final AccountRepository accountRepository;
+    StaffPaymentRepository staffPaymentRepository;
+    WorkDayRepository workDayRepository;
+    AccountRepository accountRepository;
+    OwnerCheckingService ownerCheckingService;
 
     public StaffPaymentResponse getStaffSalary(String staffUsername, int month, int year) {
         // count work day in month year
         StaffPayment staffPayment = staffPaymentRepository.findByAccount_Username(staffUsername)
-                .orElseThrow(() -> new BadException(ErrorCode.NOT_FOND));
+                .orElse(null);
 
         LocalDateTime startOfMonth = LocalDate.of(year, month, 1).atStartOfDay();
         LocalDateTime endOfMonth = LocalDate.of(year, month, 1)
@@ -44,11 +46,34 @@ public class StaffPaymentService {
 
         // check payment type to calculate
         StaffPaymentResponse response = null;
-        if(staffPayment.getType().equals(PaymentType.FullTime.name())){
+        if(staffPayment == null){
+            response = getStaffInfo(staffUsername);
+        } else if(staffPayment.getType().equals(PaymentType.FullTime.name())){
             response = getFullTimeStaffPayment(staffUsername, start, end, staffPayment);
         } else if(staffPayment.getType().equals(PaymentType.PartTime.name())){
             response = getPartTimeStaffPayment(staffUsername, start, end, staffPayment);
         }
+        return response;
+    }
+
+    private StaffPaymentResponse getStaffInfo(String staffUsername) {
+        StaffPaymentResponse response;
+        Account account = accountRepository.findByUsername(staffUsername).orElseThrow(
+                () -> new BadException(ErrorCode.USER_NOT_EXISTED)
+        );
+        response = StaffPaymentResponse.builder()
+                .userId(account.getIdAccount())
+                .role(account.getRole())
+                .username(staffUsername)
+                .name(account.getName())
+                .workStartDate(account.getCreatedAt().toString())
+                .baseSalary(0)
+                .shifts(0)
+                .payment(0)
+                .type(null)
+                .bankAccountNumber(null)
+                .bank(null)
+                .build();
         return response;
     }
 
@@ -125,5 +150,28 @@ public class StaffPaymentService {
             responses.add(getStaffSalary(username, month, year));
         }
         return responses;
+    }
+
+    public String updateStaffPaymentInfo(PaymentInfoRequest request) {
+        Account staff = accountRepository.findByUsername(request.getUsername()).orElseThrow(
+                () -> new BadException(ErrorCode.USER_NOT_EXISTED)
+        );
+        if(ownerCheckingService.iStaffOwner(staff)){
+            // get payment info
+            StaffPayment payment = staffPaymentRepository.findByAccount_Username(staff.getUsername()).orElse(null);
+            if(payment == null){
+                payment = StaffPayment.builder()
+                        .account(staff)
+                        .build();
+            }
+            payment.setBank(request.getBank());
+            payment.setType(request.getType());
+            payment.setSalary(request.getSalary());
+            payment.setBankAccountNumber(request.getBankAccountNumber());
+            staffPaymentRepository.save(payment);
+            return "OK";
+        } else {
+            throw new BadException(ErrorCode.ACCESS_DENIED);
+        }
     }
 }
