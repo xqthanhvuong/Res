@@ -104,11 +104,11 @@ public class RestaurantService {
         );
         List<RestaurantResponse> rp = new ArrayList<>();
         if(AccountRole.Owner.toString().equals(account.getRole())){
-            List<RestaurantsOfHost> restaurantsOfHosts = restaurantsOfHostRepository.findByIdAccount(account.getIdAccount());
+            List<RestaurantsOfHost> restaurantsOfHosts = restaurantsOfHostRepository.findAllByIdAccount(account.getIdAccount());
             for (RestaurantsOfHost resOfHost: restaurantsOfHosts) {
                 rp.add(restaurantMapper.toRestaurantResponse(restaurantRepository.findById(resOfHost.getIdRestaurant()).orElseThrow()));
             }
-        }else {
+        } else {
             rp.add(restaurantMapper.toRestaurantResponse(account.getRestaurant()));
         }
         return rp;

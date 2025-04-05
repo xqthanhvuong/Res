@@ -12,4 +12,5 @@ import java.util.List;
 @Repository
 public interface RestaurantsOfHostRepository  extends JpaRepository<RestaurantsOfHost, RestaurantsOfHostPK> {
     List<RestaurantsOfHost> findByIdAccount(String idAccount);
+    List<RestaurantsOfHost> findAllByIdAccount(String idAccount);
 }
