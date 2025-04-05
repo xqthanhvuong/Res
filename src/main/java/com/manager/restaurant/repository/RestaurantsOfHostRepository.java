@@ -8,9 +8,14 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Struct;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface RestaurantsOfHostRepository  extends JpaRepository<RestaurantsOfHost, RestaurantsOfHostPK> {
     List<RestaurantsOfHost> findByIdAccount(String idAccount);
     List<RestaurantsOfHost> findAllByIdAccount(String idAccount);
+
+    int countAllByIdAccountAndIdRestaurantIsIn(String idAccount, Set<String> resId);
+
+    int countAllByIdAccountAndIdRestaurant(String idAccount, String idRes);
 }

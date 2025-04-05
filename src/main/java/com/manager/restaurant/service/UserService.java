@@ -8,6 +8,7 @@ import com.manager.restaurant.exception.ErrorCode;
 import com.manager.restaurant.mapper.AccountMapper;
 import com.manager.restaurant.repository.AccountRepository;
 import com.manager.restaurant.repository.RestaurantRepository;
+import com.manager.restaurant.repository.RestaurantsOfHostRepository;
 import com.manager.restaurant.repository.StaffPaymentRepository;
 import com.manager.restaurant.until.SecurityUtils;
 import lombok.AccessLevel;
@@ -19,6 +20,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.List;
+
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
@@ -29,6 +33,7 @@ public class UserService {
     RestaurantRepository restaurantRepository;
     StaffPaymentRepository staffPaymentRepository;
     ManagerCheckingService managerCheckingService;
+    RestaurantsOfHostRepository restaurantsOfHostRepository;
 
 
     public void createAccount(AccountRequest accountRequest) {
@@ -60,6 +65,9 @@ public class UserService {
         Restaurant restaurant = restaurantRepository.findById(staffRequest.getIdRestaurant()).orElseThrow(
                 () -> new BadException(ErrorCode.RESTAURANT_NOT_FOUND)
         );
+        if(staffRequest.getRole() == AccountRole.Owner){
+            throw new BadException(ErrorCode.ACCESS_DENIED);
+        }
         Account account = accountMapper.staffToAccount(staffRequest);
         account.setRestaurant(restaurant);
         account.setStatus(AccountStatus.Active.toString());
@@ -117,13 +125,21 @@ public class UserService {
         return accountResponse;
     }
 
+    // TODO: check user restaurant
     public void deleteAccount(String idAccount) {
         if(!managerCheckingService.isManagerOrOwner()){
             throw new BadException(ErrorCode.ACCESS_DENIED);
         }
+        Account ownerAccount = accountRepository.findByUsername(SecurityUtils.getCurrentUsername()).orElseThrow(
+                ()-> new BadException(ErrorCode.USER_NOT_EXISTED)
+        );
         Account account = accountRepository.findByIdAccount(idAccount).orElseThrow(
                 () -> new BadException(ErrorCode.USER_NOT_EXISTED)
         );
+        int records = restaurantsOfHostRepository.countAllByIdAccountAndIdRestaurant(ownerAccount.getIdAccount(), account.getRestaurant().getIdRestaurant());
+        if(records == 0){
+            throw new BadException(ErrorCode.ACCESS_DENIED);
+        }
         account.setStatus("Inactive");
         accountRepository.save(account);
     }
@@ -148,5 +164,26 @@ public class UserService {
         } catch (Exception e) { }
         accountRepository.save(account);
 
+    }
+
+    public String deleteMany(AccountIdRequest request) {
+        if(!managerCheckingService.isManagerOrOwner()){
+            throw new BadException(ErrorCode.ACCESS_DENIED);
+        }
+        Account ownerAccount = accountRepository.findByUsername(SecurityUtils.getCurrentUsername()).orElseThrow(
+                ()-> new BadException(ErrorCode.USER_NOT_EXISTED)
+        );
+        List<Account> accounts = accountRepository.findAllByIdAccountIsIn(request.getAccountIds());
+        // get resId list
+        HashSet<String> resIds = new HashSet<>(accounts.stream().map((account) -> account.getRestaurant().getIdRestaurant()).toList());
+        int records = restaurantsOfHostRepository.countAllByIdAccountAndIdRestaurantIsIn(ownerAccount.getIdAccount(), resIds);
+        if(records != resIds.size()){
+            throw new BadException(ErrorCode.ACCESS_DENIED);
+        }
+        for(var account : accounts) {
+            account.setStatus("Inactive");
+        }
+        accountRepository.saveAll(accounts);
+        return "OK";
     }
 }

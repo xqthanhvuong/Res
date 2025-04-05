@@ -26,6 +26,8 @@ public interface AccountRepository extends JpaRepository<Account, String> {
 
     Optional<Account> findByIdAccount(String idAccount);
 
+    List<Account> findAllByIdAccountIsIn(List<String> accountId);
+
     List<Account> findAllByRestaurant_IdRestaurant(String idRestaurant);
 
     Optional<String> findPhoneByUsername(String username);

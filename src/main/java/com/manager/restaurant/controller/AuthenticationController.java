@@ -81,6 +81,11 @@ public class AuthenticationController {
         return JsonResponse.success("Delete success");
     }
 
+    @DeleteMapping("/delete-many")
+    public JsonResponse<String> deleteMany(@RequestBody AccountIdRequest request){
+        return JsonResponse.success(userService.deleteMany(request));
+    }
+
 
     @GetMapping("/my-info")
     public JsonResponse<AccountResponse> getMyInfo() {
