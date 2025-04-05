@@ -15,6 +15,7 @@ public class StaffPaymentResponse {
     float shifts;
     float baseSalary;
     String username;
+    String phone;
     int payment;
     String type;
     String bankAccountNumber;
