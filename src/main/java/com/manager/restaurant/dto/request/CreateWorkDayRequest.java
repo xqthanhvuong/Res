@@ -19,23 +19,25 @@ public class CreateWorkDayRequest {
     String username;
     /**
      * For fun time staff: date time ISO string
+     * YYYY-MM-DD
      */
     List<String> dayOffs;
 
     /**
      * For part-time staff: date time ISO string
+     * YYYY-MM-DD
      */
     List<String> workDays;
 
     /**
      *  For hour staff
-     *  date time ISO string
+     *  time ISO string: HH:MM:SS
      */
     List<String> timeStarts;
 
     /**
      * For hour staff
-     * date time ISO string
+     * time ISO string HH:MM:SS
      */
     List<String> timeEnds;
 }

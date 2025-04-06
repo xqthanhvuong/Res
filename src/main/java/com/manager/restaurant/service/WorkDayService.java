@@ -21,6 +21,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
@@ -123,13 +124,17 @@ public class WorkDayService {
         var startTimes = request.getTimeStarts();
         var endTimes = request.getTimeEnds();
         var workDates = request.getWorkDays();
-        for(int i = 0; i < startTimes.size(); i++){
-            workDays.add(WorkDay.builder()
-                    .account(account)
-                    .workDate(Timestamp.from(Instant.parse(workDates.get(i))))
-                    .startTime((Time) Time.from(Instant.parse(startTimes.get(i))))
-                    .endTime((Time) Time.from(Instant.parse(endTimes.get(i))))
-                    .build());
+        try {
+            for(int i = 0; i < startTimes.size(); i++){
+                workDays.add(WorkDay.builder()
+                        .account(account)
+                        .workDate(Timestamp.valueOf(LocalDate.parse(workDates.get(i)).atStartOfDay()))
+                        .startTime(Time.valueOf(startTimes.get(i)))
+                        .endTime(Time.valueOf(endTimes.get(i)))
+                        .build());
+            }
+        } catch (Exception ex){
+            throw new BadException(ErrorCode.TYPE_NOT_MATCH);
         }
         workDayRepository.saveAll(workDays);
     }
@@ -147,9 +152,15 @@ public class WorkDayService {
 
     private List<Timestamp> getWorkDaysExcludingDayOff(List<String> holidaysISO) {
         if(holidaysISO == null || holidaysISO.isEmpty()) return null;
-        Set<LocalDate> holidays = holidaysISO.stream()
-                .map(date -> LocalDate.parse(date.substring(0, 10)))
-                .collect(Collectors.toSet());
+        Set<LocalDateTime> holidays;
+        try {
+            holidays = holidaysISO.stream()
+                    .map(LocalDate::parse)
+                    .map(date -> LocalDateTime.of(date, LocalTime.MIN))
+                    .collect(Collectors.toSet());
+        } catch (Exception ex){
+            throw new BadException(ErrorCode.TYPE_NOT_MATCH);
+        }
 
         // get month, year
         String dateString = holidaysISO.getFirst().split("T")[0];
@@ -157,12 +168,12 @@ public class WorkDayService {
         int month = Integer.parseInt(dateString.split("-")[1]);
 
         List<Timestamp> workDays = new ArrayList<>();
-        LocalDate firstDay = LocalDate.of(year, month, 1);
-        LocalDate lastDay = firstDay.withDayOfMonth(firstDay.lengthOfMonth());
+        LocalDateTime firstDay = LocalDateTime.of(year, month, 1,0,0);
+        LocalDateTime lastDay = firstDay.with(TemporalAdjusters.lastDayOfMonth());
 
-        for (LocalDate date = firstDay; !date.isAfter(lastDay); date = date.plusDays(1)) {
+        for (LocalDateTime date = firstDay; !date.isAfter(lastDay); date = date.plusDays(1)) {
             if (!holidays.contains(date)) {
-                workDays.add(Timestamp.valueOf(date.atStartOfDay()));
+                workDays.add(Timestamp.valueOf(date));
             }
         }
 
