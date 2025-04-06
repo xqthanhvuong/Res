@@ -25,22 +25,22 @@ public class WorkDayController {
         return JsonResponse.success(workDayService.getById(idWorkDay));
     }
     // Get work day by date
-    @GetMapping("/get-by-date/{dateISOString}/{staffId}")
+    @GetMapping("/get-by-date/{date}/{staffId}")
     public JsonResponse<List<WorkDayResponse>> getByDate(
-            @PathVariable("dateISOString") String dateISOString,
+            @PathVariable("date") String dateString,
             @PathVariable("staffId") String staffId
     ) {
-        return JsonResponse.success(workDayService.getByDate(dateISOString, staffId));
+        return JsonResponse.success(workDayService.getByDate(dateString, staffId));
     }
 
     // Get work days form date start to date end
-    @GetMapping("/get-by-time-span/{dateISOStart}/{dateISOEnd}/{staffId}")
+    @GetMapping("/get-by-time-span/{dateStart}/{dateEnd}/{staffId}")
     public JsonResponse<List<WorkDayResponse>> getByTimeSpan(
-            @PathVariable("dateISOStart") String dateISOStart,
-            @PathVariable("dateISOEnd") String dateISOEnd,
+            @PathVariable("dateStart") String dateStart,
+            @PathVariable("dateEnd") String dateEnd,
             @PathVariable("staffId") String staffId
     ) {
-        return JsonResponse.success(workDayService.getByTimeSpan(dateISOStart, dateISOEnd, staffId));
+        return JsonResponse.success(workDayService.getByTimeSpan(dateStart, dateEnd, staffId));
     }
     // Get work days by month
     @GetMapping("/get-by-month/{month}/{year}/{staffId}")

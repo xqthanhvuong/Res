@@ -57,14 +57,13 @@ public class WorkDayService {
         return WorkDayResponse.ToList(workDays);
     }
 
-    public List<WorkDayResponse> getByTimeSpan(String dateISOStart, String dateISOEnd, String staffId) {
-        Account account = validateAccountForGet(staffId);
-        String dateStartString = dateISOStart.split("T")[0];
-        String dateEndString = dateISOEnd.split("T")[0];
-        Timestamp start = Timestamp.valueOf(dateStartString + " 00:00:00");
-        Timestamp end = Timestamp.valueOf(dateEndString + " 23:59:59");
+    public List<WorkDayResponse> getByTimeSpan(String dateStart, String dateEnd, String staffId) {
+//        validateAccountForGet(staffId);
+        Account staff = accountRepository.getReferenceById(staffId);
+        Timestamp start = Timestamp.valueOf(LocalDateTime.of(LocalDate.parse(dateStart), LocalTime.MIN));
+        Timestamp end = Timestamp.valueOf(LocalDateTime.of(LocalDate.parse(dateEnd), LocalTime.MAX));
 
-        List<WorkDay> workDays = workDayRepository.findAllByAccountAndWorkDateBetween(account, start, end)
+        List<WorkDay> workDays = workDayRepository.findAllByAccountAndWorkDateBetween(staff, start, end)
                 .orElseThrow(() -> new BadException(ErrorCode.NOT_FOND));
         return WorkDayResponse.ToList(workDays);
     }
@@ -186,7 +185,11 @@ public class WorkDayService {
         // get workday and update
         var workDay = workDayRepository.getReferenceById(request.getIdWorkDay());
         if(workDay.getIdWorkDay() == null) throw new BadException(ErrorCode.NOT_FOND);
-        workDay.setWorkDate(Timestamp.from(Instant.parse(request.getWorkDate())));
+        try {
+            workDay.setWorkDate(Timestamp.valueOf(LocalDateTime.of(LocalDate.parse(request.getWorkDate()),LocalTime.MIN)));
+        } catch (Exception e) {
+            throw new BadException(ErrorCode.TYPE_NOT_MATCH);
+        }
         if(request.getStartTime() != null && !request.getStartTime().isBlank())
             workDay.setStartTime(Time.valueOf(request.getStartTime()));
         if(request.getEndTime() != null && !request.getEndTime().isBlank())

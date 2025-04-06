@@ -12,8 +12,7 @@ import lombok.experimental.FieldDefaults;
 public class WorkDayRequest {
     String idWorkDay;
 
-    String username;
-    // ISO
+    // YYYY-MM-DD
     String workDate;
     // HH:MM:SS
     String startTime;
