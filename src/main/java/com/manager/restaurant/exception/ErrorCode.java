@@ -78,7 +78,7 @@ public enum ErrorCode {
     INVALID_REQUEST(1062, "Invalid request.", HttpStatus.BAD_REQUEST),
     CANT_PAY(1063,"Can't pay for this bill" , HttpStatus.BAD_REQUEST),
     CANT_DELETE_RES(1041,"The restaurant can't be delete because its table is in use" ,HttpStatus.FORBIDDEN ),
-    ;
+    WORKDAY_NOT_EXISTED(1064,"Work day not existed" ,HttpStatus.NOT_FOUND );
 
 
     private final int code;

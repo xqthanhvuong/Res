@@ -4,6 +4,7 @@ import com.manager.restaurant.dto.request.ReportRequest;
 import com.manager.restaurant.dto.response.ReportImageResponse;
 import com.manager.restaurant.dto.response.ReportResponse;
 import com.manager.restaurant.entity.Report;
+import com.manager.restaurant.entity.WorkDay;
 import com.manager.restaurant.exception.BadException;
 import com.manager.restaurant.exception.ErrorCode;
 import com.manager.restaurant.repository.ReportRepository;
@@ -12,6 +13,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -71,5 +73,22 @@ public class ReportService {
         if (!managerCheckingService.isManagerOrOwner()) throw new BadException(ErrorCode.ACCESS_DENIED);
         reportRepository.deleteById(idReport);
         return "ok";
+    }
+
+    public ReportResponse getReportByWorkday(String idWorkday) {
+        if(!managerCheckingService.isManagerOrOwner()) throw new BadException(ErrorCode.ACCESS_DENIED);
+        WorkDay workDay = workDayRepository.findById(idWorkday).orElseThrow(
+                () -> new BadException(ErrorCode.WORKDAY_NOT_EXISTED)
+        );
+        Report report = reportRepository.findByWorkDay(workDay);
+        if(ObjectUtils.isNotEmpty(report)){
+            return ReportResponse.builder()
+                    .idReport(report.getIdReport())
+                    .note(report.getNote())
+                    .reportImages(ReportImageResponse.toSet(report.getReportImages()))
+                    .build();
+        }else {
+            return ReportResponse.builder().build();
+        }
     }
 }

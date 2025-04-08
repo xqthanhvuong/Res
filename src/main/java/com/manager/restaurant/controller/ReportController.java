@@ -35,4 +35,9 @@ public class ReportController {
      JsonResponse<String> delete(@PathVariable("idReport") String idReport) {
           return JsonResponse.success(reportService.delete(idReport));
      }
+
+     @GetMapping("/get-by-work-day/{idWorkday}")
+     JsonResponse<ReportResponse> getReportByWorkDay(@PathVariable("idWorkday") String idWorkday) {
+          return JsonResponse.success(reportService.getReportByWorkday(idWorkday));
+     }
 }
