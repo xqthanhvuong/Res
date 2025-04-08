@@ -73,7 +73,7 @@ public class RestaurantService {
                 throw new BadException(ErrorCode.CANT_DELETE_RES);
             }
 
-            RestaurantsOfHostPK restaurantsOfHostPK = new RestaurantsOfHostPK(account.getIdAccount(), restaurant.getIdRestaurant());
+            RestaurantsOfHostPK restaurantsOfHostPK = new RestaurantsOfHostPK(restaurant.getIdRestaurant(), account.getIdAccount());
             if(!restaurantsOfHostRepository.existsById(restaurantsOfHostPK)){
                 throw new BadException(ErrorCode.ACCESS_DENIED);
             }
