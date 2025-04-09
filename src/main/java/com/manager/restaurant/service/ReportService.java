@@ -4,9 +4,11 @@ import com.manager.restaurant.dto.request.ReportRequest;
 import com.manager.restaurant.dto.response.ReportImageResponse;
 import com.manager.restaurant.dto.response.ReportResponse;
 import com.manager.restaurant.entity.Report;
+import com.manager.restaurant.entity.ReportImage;
 import com.manager.restaurant.entity.WorkDay;
 import com.manager.restaurant.exception.BadException;
 import com.manager.restaurant.exception.ErrorCode;
+import com.manager.restaurant.repository.ReportImageRepository;
 import com.manager.restaurant.repository.ReportRepository;
 import com.manager.restaurant.repository.WorkDayRepository;
 import lombok.AccessLevel;
@@ -16,6 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -24,11 +28,12 @@ import java.util.UUID;
 @Slf4j
 public class ReportService {
 
-    final ReportRepository reportRepository;
-    final WorkDayRepository workDayRepository;
-    final ManagerCheckingService managerCheckingService;
-    final StaffCheckingService staffCheckingService;
-    final ReportImageService reportImageService;
+    ReportRepository reportRepository;
+    WorkDayRepository workDayRepository;
+    ManagerCheckingService managerCheckingService;
+    StaffCheckingService staffCheckingService;
+    ReportImageService reportImageService;
+    ReportImageRepository reportImageRepository;
 
     public ReportResponse getReport(String idReport) {
         if (staffCheckingService.isStaff()) throw new BadException(ErrorCode.ACCESS_DENIED);
@@ -82,10 +87,11 @@ public class ReportService {
         );
         Report report = reportRepository.findByWorkDay(workDay);
         if(ObjectUtils.isNotEmpty(report)){
+            Set<ReportImage> images = reportImageRepository.findAllByReport(report);
             return ReportResponse.builder()
                     .idReport(report.getIdReport())
                     .note(report.getNote())
-                    .reportImages(ReportImageResponse.toSet(report.getReportImages()))
+                    .reportImages(ReportImageResponse.toSet(images))
                     .build();
         }else {
             return ReportResponse.builder().build();
