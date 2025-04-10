@@ -16,6 +16,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -112,5 +113,26 @@ public class RestaurantService {
             rp.add(restaurantMapper.toRestaurantResponse(account.getRestaurant()));
         }
         return rp;
+    }
+
+    public List<RestaurantResponse> getAllRestaurantByTableId(String idTable) {
+        RestaurantTable restaurantTable = tableRepository.findById(idTable).orElseThrow(
+                ()-> new BadException(ErrorCode.TABLE_NOT_FOUND)
+        );
+        RestaurantsOfHost restaurantsOfHost = restaurantsOfHostRepository.findByIdRestaurant(restaurantTable.getRestaurant().getIdRestaurant());
+        if(ObjectUtils.isNotEmpty(restaurantsOfHost)){
+            List<RestaurantResponse> rp = new ArrayList<>();
+            List<RestaurantsOfHost> restaurantsOfHosts = restaurantsOfHostRepository.findAllByIdAccount(restaurantsOfHost.getIdAccount());
+            List<String> idRestaurants = new ArrayList<>();
+            for (RestaurantsOfHost resOfHost: restaurantsOfHosts) {
+                idRestaurants.add(resOfHost.getIdRestaurant());
+            }
+            List<Restaurant> restaurantList = restaurantRepository.findByIdRestaurantIn(idRestaurants);
+            for (Restaurant res : restaurantList) {
+                rp.add(restaurantMapper.toRestaurantResponse(res));
+            }
+            return rp;
+        }
+        return null;
     }
 }

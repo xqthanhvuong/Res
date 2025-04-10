@@ -43,5 +43,10 @@ public class RestaurantController {
         return JsonResponse.success(restaurantService.getMyRestaurant());
     }
 
+    @GetMapping("get-all-restaurant-of-table/{idTable}")
+    public JsonResponse<List<RestaurantResponse>> getAllRestaurantOfTable(@PathVariable String idTable) {
+        return JsonResponse.success(restaurantService.getAllRestaurantByTableId(idTable));
+    }
+
 
 }
