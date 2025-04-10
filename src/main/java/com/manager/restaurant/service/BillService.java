@@ -42,6 +42,8 @@ public class BillService {
     AccountRepository accountRepository;
     OrderRepository orderRepository;
     PaymentRepository paymentRepository;
+    RestaurantsOfHostRepository restaurantsOfHostRepository;
+    NotiClient notiClient;
 
     public CheckBillResponse checkBill(String idTable) {
         RestaurantTable table = tableRepository.findById(idTable).orElseThrow(
@@ -134,9 +136,17 @@ public class BillService {
         new Thread(()->{
             notifyClients(idRes, "New order has been placed");
             List<String> deviceTokens = accountRepository.getDeviceTokenByIdRestaurant(idRes);
+            RestaurantsOfHost resOfHost = restaurantsOfHostRepository.findByIdRestaurant(idRes);
+            Account account = accountRepository.findByIdAccount(resOfHost.getIdAccount()).orElseThrow(
+                    () -> new BadException(ErrorCode.USER_NOT_EXISTED)
+            );
+            if(ObjectUtils.isNotEmpty(account.getDeviceToken())){
+                deviceTokens.add(account.getDeviceToken());
+            }
+
             if(ObjectUtils.isNotEmpty(deviceTokens)){
                 for(String deviceToken : deviceTokens){
-                    NotiClient.sendMessgae(deviceToken,"Bàn " + tableName + " có đơn hàng mới");
+                    notiClient.sendMessgae(deviceToken,"Bàn " + tableName + " có đơn hàng mới");
                 }
             }
         }).start();

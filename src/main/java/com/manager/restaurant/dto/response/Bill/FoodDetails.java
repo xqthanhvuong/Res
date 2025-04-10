@@ -15,5 +15,6 @@ public class FoodDetails {
     String image;
     int quantity;
     String idOrder;
+    String status;
     String paid;
 }

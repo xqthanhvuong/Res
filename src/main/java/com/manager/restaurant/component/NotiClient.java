@@ -1,13 +1,19 @@
 package com.manager.restaurant.component;
 
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@AllArgsConstructor
+@Component
 public class NotiClient {
+    private NotiClientConfig notiClientConfig;
 
-    public static void sendMessgae(String deviceToken, String message) {
+    public void sendMessgae(String deviceToken, String message) {
         // Prepare list of target device tokens
         List<String> deviceTokens = new ArrayList<>();
 
@@ -39,7 +45,7 @@ public class NotiClient {
 
         try {
             // Try sending the push notification
-            NotiClientConfig.sendPush(push);
+            notiClientConfig.sendPush(push);
         } catch (Exception exc) {
             // Error, print to console
             System.out.println(exc.toString());

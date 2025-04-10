@@ -55,7 +55,7 @@ public interface BillRepository extends JpaRepository<Bill, String> {
 
     Bill findByTable_IdTableAndStatus(String idTable, String status);
 
-    @Query("select new com.manager.restaurant.dto.response.Bill.FoodDetails(f.idFood, f.name, f.price, f.image, o.quantity, o.idOrder, o.payment)" +
+    @Query("select new com.manager.restaurant.dto.response.Bill.FoodDetails(f.idFood, f.name, f.price, f.image, o.quantity, o.idOrder, o.status, o.payment)" +
             "from Food f join Order o on f.idFood = o.food.idFood " +
             "where o.bill.idBill = :idBill")
     List<FoodDetails> getFoodDetails(@Param("idBill") String idBill);

@@ -15,6 +15,8 @@ public interface RestaurantsOfHostRepository  extends JpaRepository<RestaurantsO
     List<RestaurantsOfHost> findByIdAccount(String idAccount);
     List<RestaurantsOfHost> findAllByIdAccount(String idAccount);
 
+    RestaurantsOfHost findByIdRestaurant(String idRestaurant);
+
     int countAllByIdAccountAndIdRestaurantIsIn(String idAccount, Set<String> resId);
 
     int countAllByIdAccountAndIdRestaurant(String idAccount, String idRes);

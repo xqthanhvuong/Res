@@ -1,6 +1,7 @@
 package com.manager.restaurant.component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.experimental.NonFinal;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -9,18 +10,20 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+@Component
 public class NotiClientConfig {
 
-    public static ObjectMapper mapper = new ObjectMapper();
+    public ObjectMapper mapper = new ObjectMapper();
 
-    // Insert your Secret API Key here
     @Value("${pushy.secret}")
-    public static String SECRET_API_KEY;
+    @NonFinal
+    public String SECRET_API_KEY;
 
-    public static void sendPush(PushyPushRequest req) throws Exception {
+    public  void sendPush(PushyPushRequest req) throws Exception {
         // Get custom HTTP client
         HttpClient client = new DefaultHttpClient();
 
