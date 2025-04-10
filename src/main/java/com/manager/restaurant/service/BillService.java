@@ -355,7 +355,7 @@ public class BillService {
             billResponse.setIdBill(bill.getIdBill());
             billResponse.setIdTable(bill.getTable().getIdTable());
             billResponse.setNameTable(bill.getTable().getNameTable());
-            List<FoodDetails> foodDetails = billRepository.getFoodDetails(bill.getIdBill());
+            List<FoodDetails> foodDetails = billRepository.getFoodDetailsDontHaveStatus(bill.getIdBill(),"Done");
             billResponse.setFoods(foodDetails);
             double total = 0;
             for (FoodDetails foodDetail : foodDetails) {
