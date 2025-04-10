@@ -15,6 +15,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -77,7 +78,7 @@ public class TableService {
                 () -> new BadException(ErrorCode.RESTAURANT_NOT_FOUND)
         );
         if(restaurantsOfHostRepository.existsById(new RestaurantsOfHostPK(idRestaurant, account.getIdAccount()))
-                || account.getRestaurant().getIdRestaurant().equals(idRestaurant)) {
+                || (ObjectUtils.isNotEmpty(account.getRestaurant()) && account.getRestaurant().getIdRestaurant().equals(idRestaurant))) {
             List<RestaurantTable> tables = tableRepository.findByRestaurant_IdRestaurant(idRestaurant);
             List<TableResponse> rs = new ArrayList<>();
             for(RestaurantTable table : tables) {

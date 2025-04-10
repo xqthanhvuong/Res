@@ -368,6 +368,9 @@ public class BillService {
             );
         }
         Bill bill = billRepository.findByTable_IdTableAndStatus(table.getIdTable(), "Open");
+        if(ObjectUtils.isEmpty(bill)){
+            throw new BadException(ErrorCode.BILL_NOT_FOUND);
+        }
         return getBillDetails(bill.getIdBill());
     }
 
