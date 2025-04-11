@@ -14,4 +14,6 @@ public interface ReportImageRepository extends JpaRepository<ReportImage, String
     void deleteAllByReport(Report report);
 
     Set<ReportImage> findAllByReport(Report report);
+
+    Set<ReportImage> findAllByReport_IdReport(String idReport);
 }

@@ -16,11 +16,11 @@ public interface ReportRepository extends JpaRepository<Report, String> {
     Report findByWorkDay(WorkDay workDay);
 
     @Query("""
-        SELECT new com.manager.restaurant.dto.response.AdvancedReportResponse(r.idReport, r.note, acc.name,  r.reportImages, wd.workDate)
+        SELECT new com.manager.restaurant.dto.response.AdvancedReportResponse(r.idReport, r.note, acc.name, wd.workDate)
         FROM Report r
         JOIN r.workDay wd
         JOIN wd.account acc
         WHERE acc.restaurant.idRestaurant = :resId
     """)
-    Optional<List<AdvancedReportResponse>> findAllByRestaurantId(@Param("resId") String idRestaurant);
+    List<AdvancedReportResponse> findAllByRestaurantId(@Param("resId") String idRestaurant);
 }

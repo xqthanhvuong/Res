@@ -24,11 +24,10 @@ public class AdvancedReportResponse {
 
     Set<ReportImageResponse> reportImages;
 
-    public AdvancedReportResponse(String idReport, String note, String employeeName, Set<ReportImage> rpIms, Timestamp startDate){
+    public AdvancedReportResponse(String idReport, String note, String employeeName, Timestamp startDate){
         this.idReport = idReport;
         this.note = note;
         this.employeeName = employeeName;
         this.startDate = startDate;
-        this.reportImages = ReportImageResponse.toSet(rpIms);
     }
 }

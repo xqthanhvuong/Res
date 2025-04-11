@@ -101,6 +101,10 @@ public class ReportService {
     }
 
     public List<AdvancedReportResponse> getAllReportByIdRestaurant(String idRestaurant) {
-        return reportRepository.findAllByRestaurantId(idRestaurant).orElse(new ArrayList<>());
+        var responses = reportRepository.findAllByRestaurantId(idRestaurant);
+        for(var response : responses) {
+            response.setReportImages(ReportImageResponse.toSet(reportImageRepository.findAllByReport_IdReport(response.getIdReport())));
+        }
+        return responses;
     }
 }
