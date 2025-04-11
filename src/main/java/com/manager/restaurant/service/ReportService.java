@@ -1,6 +1,7 @@
 package com.manager.restaurant.service;
 
 import com.manager.restaurant.dto.request.ReportRequest;
+import com.manager.restaurant.dto.response.AdvancedReportResponse;
 import com.manager.restaurant.dto.response.ReportImageResponse;
 import com.manager.restaurant.dto.response.ReportResponse;
 import com.manager.restaurant.entity.Report;
@@ -18,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -96,5 +98,9 @@ public class ReportService {
         }else {
             return ReportResponse.builder().build();
         }
+    }
+
+    public List<AdvancedReportResponse> getAllReportByIdRestaurant(String idRestaurant) {
+        return reportRepository.findAllByRestaurantId(idRestaurant).orElse(new ArrayList<>());
     }
 }

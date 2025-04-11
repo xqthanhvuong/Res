@@ -1,6 +1,7 @@
 package com.manager.restaurant.controller;
 
 import com.manager.restaurant.dto.request.ReportRequest;
+import com.manager.restaurant.dto.response.AdvancedReportResponse;
 import com.manager.restaurant.dto.response.JsonResponse;
 import com.manager.restaurant.dto.response.ReportResponse;
 import com.manager.restaurant.service.ReportService;
@@ -8,6 +9,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/report")
@@ -39,5 +42,10 @@ public class ReportController {
      @GetMapping("/get-by-work-day/{idWorkday}")
      JsonResponse<ReportResponse> getReportByWorkDay(@PathVariable("idWorkday") String idWorkday) {
           return JsonResponse.success(reportService.getReportByWorkday(idWorkday));
+     }
+
+     @GetMapping("/get-by-restaurant-id/{idRestaurant}")
+     JsonResponse<List<AdvancedReportResponse>> getAllReportByIdRestaurant(@PathVariable("idRestaurant") String idRestaurant){
+          return  JsonResponse.success(reportService.getAllReportByIdRestaurant(idRestaurant));
      }
 }
