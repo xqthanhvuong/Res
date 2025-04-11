@@ -4,6 +4,7 @@ import com.manager.restaurant.entity.Payment;
 
 import jakarta.transaction.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,8 +17,8 @@ import org.springframework.stereotype.Repository;
 public interface PaymentRepository extends JpaRepository<Payment, String> {
 
         // Find payment by account id.
-        @Query("SELECT p FROM Payment p WHERE p.restaurant.idRestaurant = (SELECT a.restaurant.idRestaurant FROM Account a WHERE a.idAccount = :accountId)")
-        Optional<Payment> findByAccountId(@Param("accountId") String accountId);
+        @Query("SELECT p FROM Payment p WHERE p.restaurant.idRestaurant IN (SELECT r.idRestaurant FROM RestaurantsOfHost r WHERE r.idAccount = :accountId)")
+        Optional<List<Payment>> findByAccountId(@Param("accountId") String accountId);
 
         // Find payment by id.
         Optional<Payment> findByIdPayment(String idPayment);

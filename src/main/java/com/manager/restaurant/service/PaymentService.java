@@ -17,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -54,11 +56,10 @@ public class PaymentService {
         if (accountId == null) {
             throw new BadException(ErrorCode.INVALID_KEY);
         }
-
-        Payment payment = paymentRepository.findByAccountId(accountId)
+        List<Payment> payments = paymentRepository.findByAccountId(accountId)
                 .orElseThrow(() -> new BadException(ErrorCode.PAYMENT_NOT_FOUND));
 
-        return paymentMapper.toPaymentResponse(payment);
+        return paymentMapper.toPaymentResponse(payments.getFirst());
     }
 
     // Service to update payment
